@@ -7,11 +7,11 @@
     <style>
         /* General Styling */
         body {
-            background-color: black; /* Background is now black */
+            background-color: black;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: white; /* Text color is white for contrast */
+            color: white;
         }
 
         .container {
@@ -22,7 +22,7 @@
         h1 {
             margin-bottom: 50px;
             font-size: 3em;
-            color: white; /* Header color is white for contrast */
+            color: white;
         }
 
         /* Neuromorphic Design */
@@ -47,7 +47,7 @@
             text-align: right;
             border: none;
             background: inherit;
-            color: white; /* Calculator text color white */
+            color: white;
             margin-bottom: 20px;
         }
 
@@ -65,7 +65,7 @@
             border: none;
             border-radius: 15px;
             background: #444;
-            color: white; /* Button text color white */
+            color: white;
             box-shadow: 5px 5px 15px #222, -5px -5px 15px #666;
             cursor: pointer;
         }
@@ -98,7 +98,7 @@
             border: none;
             border-radius: 15px;
             background: #444;
-            color: white; /* Button text color white */
+            color: white;
             box-shadow: 5px 5px 15px #222, -5px -5px 15px #666;
             cursor: pointer;
         }
@@ -155,6 +155,48 @@
             background-color: #777;
         }
 
+        /* Chat Room Styling */
+        .chat-container {
+            margin-top: 50px;
+            background: #444;
+            border-radius: 15px;
+            box-shadow: 20px 20px 60px #1e1e1e, -20px -20px 60px #4a4a4a;
+            padding: 20px;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        #chat-box {
+            height: 300px;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 10px;
+            overflow-y: scroll;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        #message-input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            width: 80%;
+            margin-right: 10px;
+        }
+
+        #send-btn {
+            padding: 10px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background-color: #777;
+        }
+
     </style>
 </head>
 <body>
@@ -162,6 +204,15 @@
     <div class="container">
         <h1>DevMoney.co</h1>
 
+        <!-- Chat Room Section -->
+        <div class="chat-container neuromorphic">
+            <h2>Chat Room</h2>
+            <div id="chat-box"></div>
+            <input id="message-input" type="text" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
+        </div>
+
+        <!-- Existing sections: Calculator, Bulletin Board, Submission Form, etc. -->
         <!-- Calculator Section -->
         <div class="calculator neuromorphic">
             <input type="text" id="calc-display" disabled>
@@ -222,6 +273,40 @@
             </form>
         </div>
     </div>
+
+    <!-- Importing Socket.IO library -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const chatBox = document.getElementById('chat-box');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-btn');
+
+        // Listen for 'chat message' events from the server
+        socket.on('chat message', function(msg) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = msg;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        });
+
+        // Send a message to the server when the user clicks 'Send'
+        sendButton.addEventListener('click', function() {
+            const message = messageInput.value;
+            if (message.trim() !== "") {
+                socket.emit('chat message', message); // Send message to the server
+                messageInput.value = ''; // Clear the input field
+            }
+        });
+
+        // Send message when pressing "Enter" key
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendButton.click(); // Simulate button click
+            }
+        });
+    </script>
 
     <script>
         /* Calculator Functionality */
@@ -418,4 +503,3 @@
 
 </body>
 </html>
-
