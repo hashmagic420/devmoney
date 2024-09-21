@@ -106,6 +106,55 @@
         .toolbar button:active {
             box-shadow: inset 5px 5px 15px #222, inset -5px -5px 15px #666;
         }
+
+        /* Bulletin Board Styling */
+        .bulletin-board {
+            margin-top: 50px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+            border-collapse: collapse;
+        }
+
+        .bulletin-board th, .bulletin-board td {
+            padding: 15px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        /* Submission Form Styling */
+        .form-container {
+            margin-top: 50px;
+            padding: 20px;
+            background: #444;
+            border-radius: 15px;
+            box-shadow: 20px 20px 60px #1e1e1e, -20px -20px 60px #4a4a4a;
+            color: white;
+            display: inline-block;
+        }
+
+        .form-container input, .form-container button {
+            margin: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .form-container input {
+            width: 250px;
+        }
+
+        .form-container button {
+            background-color: #555;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #777;
+        }
+
     </style>
 </head>
 <body>
@@ -149,6 +198,28 @@
                 <button onclick="undo()">Undo</button>
                 <button onclick="clearCanvas()">Clear</button>
             </div>
+        </div>
+
+        <!-- Bulletin Board Section -->
+        <h2>Bulletin Board</h2>
+        <table class="bulletin-board" id="bulletinBoard">
+            <tr>
+                <th>Name</th>
+                <th>Amount (USD)</th>
+                <th>Job</th>
+            </tr>
+            <!-- Entries will be added here -->
+        </table>
+
+        <!-- Submission Form Section -->
+        <div class="form-container neuromorphic">
+            <h2>Submit Your Details</h2>
+            <form id="submissionForm">
+                <input type="text" id="name" placeholder="Your Name" required><br>
+                <input type="text" id="amount" placeholder="Amount (USD)" required><br>
+                <input type="text" id="job" placeholder="Job" required><br>
+                <button type="button" onclick="submitForm()">Submit</button>
+            </form>
         </div>
     </div>
 
@@ -314,7 +385,37 @@
 
         /* Initialize the Canvas */
         displayMessage();
+
+        /* Bulletin Board Functionality */
+        function addBulletinEntry(name, amount, job) {
+            const table = document.getElementById("bulletinBoard");
+            const row = table.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+            const cell3 = row.insertCell(2);
+            cell1.textContent = name;
+            cell2.textContent = amount;
+            cell3.textContent = job;
+        }
+
+        /* Submission Form Handling */
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const amount = document.getElementById('amount').value;
+            const job = document.getElementById('job').value;
+
+            // Add entry to bulletin board
+            addBulletinEntry(name, amount, job);
+
+            // Email submission (you'll need backend to process this)
+            const mailtoLink = `mailto:devmoney@gmail.com?subject=Job%20Submission&body=Name:%20${name}%0AAmount:%20${amount}%0AJob:%20${job}`;
+            window.location.href = mailtoLink;
+
+            // Clear form
+            document.getElementById('submissionForm').reset();
+        }
     </script>
 
 </body>
 </html>
+
