@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevMoney.co</title>
+    <style>
+        /* General Styling */
+        body {
+            background-color: black; /* Background is now black */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white; /* Text color is white for contrast */
+        }
+
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            margin-bottom: 50px;
+            font-size: 3em;
+            color: white; /* Header color is white for contrast */
+        }
+
+        /* Neuromorphic Design */
+        .neuromorphic {
+            background: #333;
+            border-radius: 20px;
+            box-shadow: 20px 20px 60px #1e1e1e, -20px -20px 60px #4a4a4a;
+            margin: 30px auto;
+            padding: 30px;
+            width: fit-content;
+        }
+
+        /* Calculator Styling */
+        .calculator {
+            display: inline-block;
+        }
+
+        #calc-display {
+            width: 260px;
+            padding: 15px;
+            font-size: 1.5em;
+            text-align: right;
+            border: none;
+            background: inherit;
+            color: white; /* Calculator text color white */
+            margin-bottom: 20px;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            grid-gap: 15px;
+            justify-content: center;
+        }
+
+        .calc-buttons button {
+            width: 60px;
+            height: 60px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 15px;
+            background: #444;
+            color: white; /* Button text color white */
+            box-shadow: 5px 5px 15px #222, -5px -5px 15px #666;
+            cursor: pointer;
+        }
+
+        .calc-buttons button:active {
+            box-shadow: inset 5px 5px 15px #222, inset -5px -5px 15px #666;
+        }
+
+        /* Whiteboard Styling */
+        .whiteboard {
+            position: relative;
+            display: inline-block;
+            margin-top: 50px;
+        }
+
+        #canvas {
+            border-radius: 20px;
+            box-shadow: 10px 10px 30px #1e1e1e, -10px -10px 30px #4a4a4a;
+            background-color: #ffffff;
+        }
+
+        .toolbar {
+            margin-top: 20px;
+        }
+
+        .toolbar button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 15px;
+            background: #444;
+            color: white; /* Button text color white */
+            box-shadow: 5px 5px 15px #222, -5px -5px 15px #666;
+            cursor: pointer;
+        }
+
+        .toolbar button:active {
+            box-shadow: inset 5px 5px 15px #222, inset -5px -5px 15px #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>DevMoney.co</h1>
+
+        <!-- Calculator Section -->
+        <div class="calculator neuromorphic">
+            <input type="text" id="calc-display" disabled>
+            <div class="calc-buttons">
+                <!-- Calculator buttons -->
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button onclick="chooseOperation('/')">÷</button>
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button onclick="chooseOperation('*')">×</button>
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button onclick="chooseOperation('-')">−</button>
+                <button onclick="appendDecimal()">.</button>
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="chooseOperation('+')">+</button>
+                <button onclick="clearDisplay()">C</button>
+            </div>
+        </div>
+
+        <!-- Whiteboard Section -->
+        <div class="whiteboard neuromorphic">
+            <canvas id="canvas" width="800" height="400"></canvas>
+            <div class="toolbar">
+                <button onclick="changeColor('black')">Black</button>
+                <button onclick="changeColor('gray')">Gray</button>
+                <button onclick="changeColor('red')">Red</button>
+                <button onclick="changeColor('white')">Eraser</button>
+                <button onclick="undo()">Undo</button>
+                <button onclick="clearCanvas()">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Calculator Functionality */
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = null;
+
+        const display = document.getElementById('calc-display');
+
+        function appendNumber(number) {
+            if (currentOperand === '' && number === '0') return;  // prevent leading zeros
+            currentOperand += number;
+            updateDisplay();
+        }
+
+        function appendDecimal() {
+            if (!currentOperand.includes('.')) {
+                currentOperand += '.';
+                updateDisplay();
+            }
+        }
+
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                calculate();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+        }
+
+        function clearDisplay() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = null;
+            updateDisplay();
+        }
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = current === 0 ? 'Error' : prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentOperand = result.toString();
+            operation = null;
+            previousOperand = '';
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.value = currentOperand;
+        }
+
+        /* Whiteboard Functionality */
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        let currentColor = 'black';
+        let paths = [];
+        let currentPath = [];
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        function startDrawing(e) {
+            drawing = true;
+            currentPath = [];
+            addPoint(e);
+        }
+
+        function stopDrawing() {
+            if (!drawing) return;
+            drawing = false;
+            paths.push({ color: currentColor, path: currentPath });
+            ctx.beginPath();  // reset the context
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            addPoint(e);
+            redraw();
+        }
+
+        function addPoint(e) {
+            const rect = canvas.getBoundingClientRect();
+            currentPath.push({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            });
+        }
+
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            paths.forEach(({ color, path }) => {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = color === 'white' ? 20 : 5;
+                ctx.beginPath();
+                path.forEach((point, index) => {
+                    if (index === 0) {
+                        ctx.moveTo(point.x, point.y);
+                    } else {
+                        ctx.lineTo(point.x, point.y);
+                    }
+                });
+                ctx.stroke();
+            });
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentColor === 'white' ? 20 : 5;
+            ctx.beginPath();
+            currentPath.forEach((point, index) => {
+                if (index === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+            });
+            ctx.stroke();
+        }
+
+        function changeColor(color) {
+            currentColor = color;
+        }
+
+        function undo() {
+            paths.pop();
+            redraw();
+        }
+
+        function clearCanvas() {
+            paths = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            displayMessage();
+        }
+
+        function displayMessage() {
+            ctx.font = '30px Arial';
+            ctx.fillStyle = '#999';
+            ctx.textAlign = 'center';
+            ctx.fillText('How much can you make being a dev?', canvas.width / 2, 50);
+        }
+
+        /* Initialize the Canvas */
+        displayMessage();
+    </script>
+
+</body>
+</html>
