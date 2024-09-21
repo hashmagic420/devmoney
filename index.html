@@ -7,11 +7,11 @@
     <style>
         /* General Styling */
         body {
-            background-color: black;
+            background-color: black; /* Black background for dark theme */
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: white;
+            color: white; /* White text for contrast */
         }
 
         .container {
@@ -212,7 +212,6 @@
             <button id="send-btn">Send</button>
         </div>
 
-        <!-- Existing sections: Calculator, Bulletin Board, Submission Form, etc. -->
         <!-- Calculator Section -->
         <div class="calculator neuromorphic">
             <input type="text" id="calc-display" disabled>
@@ -277,13 +276,13 @@
     <!-- Importing Socket.IO library -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io(); // Initialize the connection with Socket.IO
 
         const chatBox = document.getElementById('chat-box');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-btn');
 
-        // Listen for 'chat message' events from the server
+        // Listen for 'chat message' events from the server and display the message
         socket.on('chat message', function(msg) {
             const messageElement = document.createElement('p');
             messageElement.textContent = msg;
@@ -503,3 +502,4 @@
 
 </body>
 </html>
+
