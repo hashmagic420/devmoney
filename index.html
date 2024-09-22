@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevMoney.co</title>
+    
+    <!-- Styles -->
     <style>
         /* General Styling */
         body {
@@ -239,10 +242,10 @@
         </div>
 
         <!-- Secure iframe Setup -->
-        <!-- The 'allow-same-origin' attribute has been removed to prevent security risks -->
+        <!-- Using both 'allow-scripts' and 'allow-same-origin' with a strict CSP -->
         <iframe 
-            sandbox="allow-scripts"
-            src="https://example.com/embedded-content"
+            sandbox="allow-scripts allow-same-origin"
+            src="https://iframe.devmoney.co/embedded-content"
             width="100%" 
             height="300">
         </iframe>
@@ -369,7 +372,7 @@
             addPoint(e);
         }
 
-        function stopDrawing() {
+        function stopDrawing(e) {
             if (!drawing) return;
             drawing = false;
             paths.push({ color: currentColor, path: currentPath });
@@ -384,10 +387,9 @@
 
         function addPoint(e) {
             const rect = canvas.getBoundingClientRect();
-            currentPath.push({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            });
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            currentPath.push({ x, y });
         }
 
         function redraw() {
@@ -403,14 +405,16 @@
                 ctx.stroke();
             });
 
-            ctx.strokeStyle = currentColor;
-            ctx.lineWidth = currentColor === 'white' ? 20 : 5;
-            ctx.beginPath();
-            currentPath.forEach((point, index) => {
-                if (index === 0) ctx.moveTo(point.x, point.y);
-                else ctx.lineTo(point.x, point.y);
-            });
-            ctx.stroke();
+            if (currentPath.length > 0) {
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = currentColor === 'white' ? 20 : 5;
+                ctx.beginPath();
+                currentPath.forEach((point, index) => {
+                    if (index === 0) ctx.moveTo(point.x, point.y);
+                    else ctx.lineTo(point.x, point.y);
+                });
+                ctx.stroke();
+            }
         }
 
         function changeColor(color) {
