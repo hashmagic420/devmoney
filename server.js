@@ -1,34 +1,37 @@
+const fs = require('fs');
+const https = require('https');
 const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
-const path = require('path');
-
-// Create a new Express app
 const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
 
-// Serve static files (your HTML, CSS, etc.)
-app.use(express.static(path.join(__dirname, '/')));
+const options = {
+  key: fs.readFileSync('/path/to/privkey.pem'),
+  cert: fs.readFileSync('/path/to/fullchain.pem')
+};
 
-// Handle Socket.IO connections
+const server = https.createServer(options, app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "https://www.devmoney.co",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Serve static files from the current directory
+app.use(express.static(__dirname));
+
 io.on('connection', (socket) => {
-    console.log('A user connected');
+  console.log('a user connected');
 
-    // Listen for chat messages and broadcast them
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
 
-    // Handle user disconnections
-    socket.on('disconnect', () => {
-        console.log('A user disconnected');
-    });
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
 });
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+server.listen(443, () => {
+  console.log('Server listening on port 443');
 });
-
