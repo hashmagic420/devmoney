@@ -162,10 +162,6 @@
             border: none;
             border-radius: 5px;
         }
-
-        #send-btn:hover {
-            background-color: #777;
-        }
     </style>
 </head>
 <body>
@@ -239,11 +235,12 @@
             </form>
         </div>
 
-        <!-- Secure iframe setup: Fixing the sandbox attribute issue -->
-        <!-- If you're using any iframe, ensure security with the correct sandbox attribute settings -->
+        <!-- Example iframe with Corrected Sandbox (if needed) -->
+        <!-- If you're using iframes on your site, here's an example of a secure setup -->
+        <!-- If you need to include any iframe that runs scripts, ensure you either remove allow-same-origin or use a subdomain -->
         <iframe 
             sandbox="allow-scripts"
-            src="https://trusted-source.com"
+            src="https://trusted-iframe-source.com"
             width="100%" 
             height="300">
         </iframe>
