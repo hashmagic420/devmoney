@@ -239,10 +239,10 @@
         </div>
 
         <!-- Secure iframe Setup -->
-        <!-- Ensure that the iframe source is from a different origin to maintain security when using both allow-scripts and allow-same-origin -->
+        <!-- The 'allow-same-origin' attribute has been removed to prevent security risks -->
         <iframe 
             sandbox="allow-scripts"
-            src="https://trusted-iframe-source.example.com"
+            src="https://example.com/embedded-content"
             width="100%" 
             height="300">
         </iframe>
@@ -252,6 +252,7 @@
     <!-- Importing Socket.IO Library -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // Chat Room Functionality
         const socket = io();
 
         const chatBox = document.getElementById('chat-box');
@@ -281,7 +282,7 @@
     </script>
 
     <script>
-        /* Calculator Functionality */
+        // Calculator Functionality
         let currentOperand = '';
         let previousOperand = '';
         let operation = null;
@@ -346,8 +347,10 @@
         function updateDisplay() {
             display.value = currentOperand;
         }
+    </script>
 
-        /* Whiteboard Functionality */
+    <script>
+        // Whiteboard Functionality
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
@@ -423,8 +426,10 @@
             paths = [];
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
+    </script>
 
-        /* Bulletin Board Functionality */
+    <script>
+        // Bulletin Board Functionality
         function addBulletinEntry(name, amount, job) {
             const table = document.getElementById("bulletinBoard");
             const row = table.insertRow();
@@ -436,7 +441,7 @@
             cell3.textContent = job;
         }
 
-        /* Submission Form Handling */
+        // Submission Form Handling
         function submitForm() {
             const name = document.getElementById('name').value;
             const amount = document.getElementById('amount').value;
