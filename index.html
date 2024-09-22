@@ -7,11 +7,11 @@
     <style>
         /* General Styling */
         body {
-            background-color: black; /* Black background for dark theme */
+            background-color: black; /* Background color */
             font-family: Arial, sans-serif;
+            color: white; /* Text color */
             margin: 0;
             padding: 0;
-            color: white; /* White text for contrast */
         }
 
         .container {
@@ -22,7 +22,6 @@
         h1 {
             margin-bottom: 50px;
             font-size: 3em;
-            color: white;
         }
 
         /* Neuromorphic Design */
@@ -66,25 +65,19 @@
             border-radius: 15px;
             background: #444;
             color: white;
-            box-shadow: 5px 5px 15px #222, -5px -5px 15px #666;
             cursor: pointer;
-        }
-
-        .calc-buttons button:active {
-            box-shadow: inset 5px 5px 15px #222, inset -5px -5px 15px #666;
         }
 
         /* Whiteboard Styling */
         .whiteboard {
-            position: relative;
             display: inline-block;
             margin-top: 50px;
         }
 
         #canvas {
             border-radius: 20px;
+            background-color: white;
             box-shadow: 10px 10px 30px #1e1e1e, -10px -10px 30px #4a4a4a;
-            background-color: #ffffff;
         }
 
         .toolbar {
@@ -94,25 +87,17 @@
         .toolbar button {
             margin: 0 10px;
             padding: 10px 20px;
-            font-size: 1em;
             border: none;
             border-radius: 15px;
             background: #444;
             color: white;
-            box-shadow: 5px 5px 15px #222, -5px -5px 15px #666;
             cursor: pointer;
-        }
-
-        .toolbar button:active {
-            box-shadow: inset 5px 5px 15px #222, inset -5px -5px 15px #666;
         }
 
         /* Bulletin Board Styling */
         .bulletin-board {
             margin-top: 50px;
             width: 80%;
-            margin-left: auto;
-            margin-right: auto;
             color: white;
             border-collapse: collapse;
         }
@@ -123,14 +108,12 @@
             text-align: center;
         }
 
-        /* Submission Form Styling */
+        /* Form Styling */
         .form-container {
             margin-top: 50px;
             padding: 20px;
             background: #444;
             border-radius: 15px;
-            box-shadow: 20px 20px 60px #1e1e1e, -20px -20px 60px #4a4a4a;
-            color: white;
             display: inline-block;
         }
 
@@ -145,22 +128,11 @@
             width: 250px;
         }
 
-        .form-container button {
-            background-color: #555;
-            color: white;
-            cursor: pointer;
-        }
-
-        .form-container button:hover {
-            background-color: #777;
-        }
-
         /* Chat Room Styling */
         .chat-container {
             margin-top: 50px;
             background: #444;
             border-radius: 15px;
-            box-shadow: 20px 20px 60px #1e1e1e, -20px -20px 60px #4a4a4a;
             padding: 20px;
             width: 80%;
             margin: 0 auto;
@@ -179,7 +151,6 @@
         #message-input {
             padding: 10px;
             border-radius: 5px;
-            border: none;
             width: 80%;
             margin-right: 10px;
         }
@@ -190,13 +161,7 @@
             color: white;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
         }
-
-        #send-btn:hover {
-            background-color: #777;
-        }
-
     </style>
 </head>
 <body>
@@ -216,7 +181,6 @@
         <div class="calculator neuromorphic">
             <input type="text" id="calc-display" disabled>
             <div class="calc-buttons">
-                <!-- Calculator buttons -->
                 <button onclick="appendNumber('7')">7</button>
                 <button onclick="appendNumber('8')">8</button>
                 <button onclick="appendNumber('9')">9</button>
@@ -258,10 +222,9 @@
                 <th>Amount (USD)</th>
                 <th>Job</th>
             </tr>
-            <!-- Entries will be added here -->
         </table>
 
-        <!-- Submission Form Section -->
+        <!-- Form Section -->
         <div class="form-container neuromorphic">
             <h2>Submit Your Details</h2>
             <form id="submissionForm">
@@ -271,18 +234,29 @@
                 <button type="button" onclick="submitForm()">Submit</button>
             </form>
         </div>
+
+        <!-- Example iframe with Corrected Sandbox (if needed) -->
+        <!-- If you're using iframes on your site, here's an example of a secure setup -->
+        <!-- If you need to include any iframe that runs scripts, ensure you either remove allow-same-origin or use a subdomain -->
+        <iframe 
+            sandbox="allow-scripts"
+            src="https://trusted-iframe-source.com"
+            width="100%" 
+            height="300">
+        </iframe>
+
     </div>
 
-    <!-- Importing Socket.IO library -->
+    <!-- Importing Socket.IO Library -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io(); // Initialize the connection with Socket.IO
+        const socket = io(); // Initialize Socket.IO connection
 
         const chatBox = document.getElementById('chat-box');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-btn');
 
-        // Listen for 'chat message' events from the server and display the message
+        // Listen for 'chat message' events from server and display them
         socket.on('chat message', function(msg) {
             const messageElement = document.createElement('p');
             messageElement.textContent = msg;
@@ -290,19 +264,19 @@
             chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
         });
 
-        // Send a message to the server when the user clicks 'Send'
+        // Send a message to server when clicking 'Send' or pressing Enter
         sendButton.addEventListener('click', function() {
             const message = messageInput.value;
             if (message.trim() !== "") {
-                socket.emit('chat message', message); // Send message to the server
-                messageInput.value = ''; // Clear the input field
+                socket.emit('chat message', message);
+                messageInput.value = ''; // Clear the input
             }
         });
 
-        // Send message when pressing "Enter" key
+        // Allow "Enter" to send message
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                sendButton.click(); // Simulate button click
+                sendButton.click(); // Trigger send
             }
         });
     </script>
@@ -316,7 +290,6 @@
         const display = document.getElementById('calc-display');
 
         function appendNumber(number) {
-            if (currentOperand === '' && number === '0') return;  // prevent leading zeros
             currentOperand += number;
             updateDisplay();
         }
@@ -330,19 +303,10 @@
 
         function chooseOperation(op) {
             if (currentOperand === '') return;
-            if (previousOperand !== '') {
-                calculate();
-            }
+            if (previousOperand !== '') calculate();
             operation = op;
             previousOperand = currentOperand;
             currentOperand = '';
-        }
-
-        function clearDisplay() {
-            currentOperand = '';
-            previousOperand = '';
-            operation = null;
-            updateDisplay();
         }
 
         function calculate() {
@@ -373,6 +337,13 @@
             updateDisplay();
         }
 
+        function clearDisplay() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = null;
+            updateDisplay();
+        }
+
         function updateDisplay() {
             display.value = currentOperand;
         }
@@ -400,7 +371,7 @@
             if (!drawing) return;
             drawing = false;
             paths.push({ color: currentColor, path: currentPath });
-            ctx.beginPath();  // reset the context
+            ctx.beginPath();
         }
 
         function draw(e) {
@@ -424,23 +395,18 @@
                 ctx.lineWidth = color === 'white' ? 20 : 5;
                 ctx.beginPath();
                 path.forEach((point, index) => {
-                    if (index === 0) {
-                        ctx.moveTo(point.x, point.y);
-                    } else {
-                        ctx.lineTo(point.x, point.y);
-                    }
+                    if (index === 0) ctx.moveTo(point.x, point.y);
+                    else ctx.lineTo(point.x, point.y);
                 });
                 ctx.stroke();
             });
+
             ctx.strokeStyle = currentColor;
             ctx.lineWidth = currentColor === 'white' ? 20 : 5;
             ctx.beginPath();
             currentPath.forEach((point, index) => {
-                if (index === 0) {
-                    ctx.moveTo(point.x, point.y);
-                } else {
-                    ctx.lineTo(point.x, point.y);
-                }
+                if (index === 0) ctx.moveTo(point.x, point.y);
+                else ctx.lineTo(point.x, point.y);
             });
             ctx.stroke();
         }
@@ -457,18 +423,7 @@
         function clearCanvas() {
             paths = [];
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            displayMessage();
         }
-
-        function displayMessage() {
-            ctx.font = '30px Arial';
-            ctx.fillStyle = '#999';
-            ctx.textAlign = 'center';
-            ctx.fillText('How much can you make being a dev?', canvas.width / 2, 50);
-        }
-
-        /* Initialize the Canvas */
-        displayMessage();
 
         /* Bulletin Board Functionality */
         function addBulletinEntry(name, amount, job) {
@@ -488,17 +443,15 @@
             const amount = document.getElementById('amount').value;
             const job = document.getElementById('job').value;
 
-            // Add entry to bulletin board
             addBulletinEntry(name, amount, job);
 
-            // Email submission (you'll need backend to process this)
             const mailtoLink = `mailto:devmoney@gmail.com?subject=Job%20Submission&body=Name:%20${name}%0AAmount:%20${amount}%0AJob:%20${job}`;
             window.location.href = mailtoLink;
 
-            // Clear form
             document.getElementById('submissionForm').reset();
         }
     </script>
 
 </body>
 </html>
+
