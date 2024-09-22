@@ -7,9 +7,9 @@
     <style>
         /* General Styling */
         body {
-            background-color: black; /* Background color */
+            background-color: black;
             font-family: Arial, sans-serif;
-            color: white; /* Text color */
+            color: white;
             margin: 0;
             padding: 0;
         }
@@ -100,6 +100,8 @@
             width: 80%;
             color: white;
             border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .bulletin-board th, .bulletin-board td {
@@ -135,7 +137,8 @@
             border-radius: 15px;
             padding: 20px;
             width: 80%;
-            margin: 0 auto;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         #chat-box {
@@ -235,12 +238,11 @@
             </form>
         </div>
 
-        <!-- Example iframe with Corrected Sandbox (if needed) -->
-        <!-- If you're using iframes on your site, here's an example of a secure setup -->
-        <!-- If you need to include any iframe that runs scripts, ensure you either remove allow-same-origin or use a subdomain -->
+        <!-- Secure iframe Setup -->
+        <!-- Ensure that the iframe source is from a different origin to maintain security when using both allow-scripts and allow-same-origin -->
         <iframe 
             sandbox="allow-scripts"
-            src="https://trusted-iframe-source.com"
+            src="https://trusted-iframe-source.example.com"
             width="100%" 
             height="300">
         </iframe>
@@ -250,33 +252,30 @@
     <!-- Importing Socket.IO Library -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io(); // Initialize Socket.IO connection
+        const socket = io();
 
         const chatBox = document.getElementById('chat-box');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-btn');
 
-        // Listen for 'chat message' events from server and display them
         socket.on('chat message', function(msg) {
             const messageElement = document.createElement('p');
             messageElement.textContent = msg;
             chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
         });
 
-        // Send a message to server when clicking 'Send' or pressing Enter
         sendButton.addEventListener('click', function() {
             const message = messageInput.value;
             if (message.trim() !== "") {
                 socket.emit('chat message', message);
-                messageInput.value = ''; // Clear the input
+                messageInput.value = '';
             }
         });
 
-        // Allow "Enter" to send message
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                sendButton.click(); // Trigger send
+                sendButton.click();
             }
         });
     </script>
@@ -445,7 +444,7 @@
 
             addBulletinEntry(name, amount, job);
 
-            const mailtoLink = `mailto:devmoney@gmail.com?subject=Job%20Submission&body=Name:%20${name}%0AAmount:%20${amount}%0AJob:%20${job}`;
+            const mailtoLink = `mailto:devmoney@gmail.com?subject=Job%20Submission&body=Name:%20${encodeURIComponent(name)}%0AAmount:%20${encodeURIComponent(amount)}%0AJob:%20${encodeURIComponent(job)}`;
             window.location.href = mailtoLink;
 
             document.getElementById('submissionForm').reset();
@@ -454,4 +453,3 @@
 
 </body>
 </html>
-
