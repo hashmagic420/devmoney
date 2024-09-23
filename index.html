@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevMoney.co</title>
     
+    <!-- Ably SDK for Chat -->
+    <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
+    
+    <!-- Fabric.js for Whiteboard -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.1/fabric.min.js"></script>
+    
     <!-- Styles -->
     <style>
         /* General Styling */
@@ -122,14 +128,15 @@
             display: inline-block;
         }
 
-        .form-container input, .form-container button {
+        .form-container input, .form-container button, .form-container textarea {
             margin: 10px;
             padding: 10px;
             border: none;
             border-radius: 5px;
+            color: black;
         }
 
-        .form-container input {
+        .form-container input, .form-container textarea {
             width: 250px;
         }
 
@@ -241,30 +248,45 @@
             </form>
         </div>
 
+        <!-- Contact Form Section -->
+        <div class="form-container neuromorphic" id="contact">
+            <h2>Contact Us</h2>
+            <form id="contact-form">
+                <input type="text" id="contact-name" placeholder="Your Name" required><br>
+                <input type="email" id="contact-email" placeholder="Your Email" required><br>
+                <textarea id="contact-message" placeholder="Your Message" required></textarea><br>
+                <button type="submit">Send Message</button>
+            </form>
+            <p id="contact-status"></p>
+        </div>
+
         <!-- Secure iframe Setup -->
-        <!-- Using both 'allow-scripts' and 'allow-same-origin' with a strict CSP -->
         <iframe 
             sandbox="allow-scripts allow-same-origin"
-            src="https://iframe.devmoney.co/embedded-content"
+            src="https://devmoney.co/embedded-content"
             width="100%" 
             height="300">
         </iframe>
 
     </div>
 
-    <!-- Importing Socket.IO Library -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        // Chat Room Functionality
-        const socket = io();
+    <!-- Scripts -->
 
+    <!-- Chat Room Functionality with Ably -->
+    <script>
+        // Chat Room Functionality with Ably
         const chatBox = document.getElementById('chat-box');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-btn');
 
-        socket.on('chat message', function(msg) {
+        // Initialize Ably with API Key
+        const ably = new Ably.Realtime('YOUR_ABLY_API_KEY'); // Replace with your actual API key
+
+        const channel = ably.channels.get('chat-channel');
+
+        channel.subscribe('chat-message', function(message) {
             const messageElement = document.createElement('p');
-            messageElement.textContent = msg;
+            messageElement.textContent = message.data;
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
@@ -272,7 +294,7 @@
         sendButton.addEventListener('click', function() {
             const message = messageInput.value;
             if (message.trim() !== "") {
-                socket.emit('chat message', message);
+                channel.publish('chat-message', message);
                 messageInput.value = '';
             }
         });
@@ -353,82 +375,31 @@
     </script>
 
     <script>
-        // Whiteboard Functionality
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
-        let currentColor = 'black';
-        let paths = [];
-        let currentPath = [];
+        // Whiteboard Functionality using Fabric.js
+        const canvas = new fabric.Canvas('canvas');
 
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
-        canvas.addEventListener('mousemove', draw);
+        // Set default brush color
+        canvas.freeDrawingBrush.color = 'black';
+        canvas.isDrawingMode = true;
 
-        function startDrawing(e) {
-            drawing = true;
-            currentPath = [];
-            addPoint(e);
-        }
-
-        function stopDrawing(e) {
-            if (!drawing) return;
-            drawing = false;
-            paths.push({ color: currentColor, path: currentPath });
-            ctx.beginPath();
-        }
-
-        function draw(e) {
-            if (!drawing) return;
-            addPoint(e);
-            redraw();
-        }
-
-        function addPoint(e) {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            currentPath.push({ x, y });
-        }
-
-        function redraw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            paths.forEach(({ color, path }) => {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = color === 'white' ? 20 : 5;
-                ctx.beginPath();
-                path.forEach((point, index) => {
-                    if (index === 0) ctx.moveTo(point.x, point.y);
-                    else ctx.lineTo(point.x, point.y);
-                });
-                ctx.stroke();
-            });
-
-            if (currentPath.length > 0) {
-                ctx.strokeStyle = currentColor;
-                ctx.lineWidth = currentColor === 'white' ? 20 : 5;
-                ctx.beginPath();
-                currentPath.forEach((point, index) => {
-                    if (index === 0) ctx.moveTo(point.x, point.y);
-                    else ctx.lineTo(point.x, point.y);
-                });
-                ctx.stroke();
+        function changeColor(color) {
+            canvas.freeDrawingBrush.color = color;
+            if (color === 'white') {
+                canvas.freeDrawingBrush.width = 20;
+            } else {
+                canvas.freeDrawingBrush.width = 5;
             }
         }
 
-        function changeColor(color) {
-            currentColor = color;
-        }
-
         function undo() {
-            paths.pop();
-            redraw();
+            const lastObject = canvas.getObjects().pop();
+            if (lastObject) {
+                canvas.remove(lastObject);
+            }
         }
 
         function clearCanvas() {
-            paths = [];
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.clear();
         }
     </script>
 
@@ -460,5 +431,33 @@
         }
     </script>
 
+    <script>
+        // Contact Form Functionality
+        const contactForm = document.getElementById('contact-form');
+        const contactStatus = document.getElementById('contact-status');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+
+            if (name.trim() === '' || email.trim() === '' || message.trim() === '') {
+                contactStatus.textContent = 'Please fill in all fields.';
+                return;
+            }
+
+            contactStatus.textContent = 'Sending message...';
+
+            // Simulate sending email (in production, send data to server)
+            setTimeout(function() {
+                contactStatus.textContent = 'Thank you for your message!';
+                contactForm.reset();
+            }, 2000);
+        });
+    </script>
+
 </body>
 </html>
+
