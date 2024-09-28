@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevMoney.co - Comprehensive Financial Tools</title>
+    <title>DevMoney.co - Comprehensive Financial Tools with Magic HTML Editor and Matrix Animation</title>
     <style>
         /* Reset and base styles */
         * {
@@ -229,39 +229,53 @@
             box-shadow: 3px 3px 6px #d1d1d1, -3px -3px 6px #ffffff;
         }
 
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #f0f0f3;
-            margin: 15% auto;
-            padding: 20px;
+        /* Magic HTML Editor - Neuromorphic Integration */
+        .magic-editor-container {
+            background: #f0f0f3;
             border-radius: 10px;
             box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
-            width: 80%;
-            max-width: 500px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
+        .magic-editor {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
         }
-        .close:hover,
-        .close:focus {
+        .magic-editor textarea {
+            flex: 1;
+            margin: 5px;
+            padding: 8px;
+            border: 2px solid #333;
+            background-color: #3a3f4a;
+            color: #ffffff;
+            font-size: 16px;
+            resize: none;
+        }
+        #output {
+            flex-grow: 1;
+            background-color: #fff;
             color: #000;
-            text-decoration: none;
+            border: 1px solid #333;
+            margin: 5px;
+        }
+        .editor-controls {
+            display: flex;
+            justify-content: space-between;
+        }
+        .editor-controls select,
+        .editor-controls button {
+            padding: 10px;
+            margin-right: 10px;
+            background-color: #E64A19;
+            border: none;
+            color: #fff;
             cursor: pointer;
+            border-radius: 5px;
+        }
+        .editor-controls button:hover {
+            background-color: #D54B1A;
         }
 
         /* Responsive design */
@@ -290,7 +304,9 @@
     </style>
 </head>
 <body>
+    <!-- Matrix Canvas for the background animation -->
     <canvas id="matrix-canvas"></canvas>
+
     <div class="container">
         <header class="header neuromorphic">
             <h1>DevMoney.co</h1>
@@ -298,6 +314,7 @@
                 <a href="#calculator" class="nav-item">Calculator</a>
                 <a href="#whiteboard" class="nav-item">Whiteboard</a>
                 <a href="#code-editor" class="nav-item">Code Editor</a>
+                <a href="#magic-editor" class="nav-item">Magic Editor</a>
                 <a href="#bulletin-board" class="nav-item">Bulletin Board</a>
                 <a href="#contact" class="nav-item">Contact</a>
             </nav>
@@ -350,11 +367,26 @@
             <canvas id="canvas"></canvas>
         </section>
 
-        <section id="code-editor" class="code-editor neuromorphic">
-            <h2>Financial Code Editor</h2>
-            <textarea id="code-input" placeholder="Enter your JavaScript code here..."></textarea>
-            <button id="runCode" class="btn">Run Code</button>
-            <div id="code-output"></div>
+        <section id="magic-editor" class="magic-editor-container neuromorphic">
+            <h2>Magic HTML Live Code Editor</h2>
+            <div id="editorContainer" class="magic-editor">
+                <div class="editor">
+                    <textarea id="html" placeholder="HTML Code"></textarea>
+                    <textarea id="css" placeholder="CSS Code"></textarea>
+                    <textarea id="js" placeholder="JavaScript Code"></textarea>
+                </div>
+                <div class="editor-controls">
+                    <select id="librarySelector">
+                        <option value="html">HTML Only</option>
+                        <option value="p5">HTML/P5.js</option>
+                        <option value="three">HTML/Three.js</option>
+                        <option value="all">HTML/All</option>
+                    </select>
+                    <button onclick="updateOutput()">Update Preview</button>
+                    <button onclick="exportHTML()">Export as HTML</button>
+                </div>
+                <iframe id="output" title="Code Preview"></iframe>
+            </div>
         </section>
 
         <section id="bulletin-board" class="bulletin-board neuromorphic">
@@ -443,6 +475,49 @@
             matrixCanvas.width = window.innerWidth;
             matrixCanvas.height = window.innerHeight;
         });
+
+        // Magic HTML Editor functionality
+        const htmlInput = document.getElementById('html');
+        const cssInput = document.getElementById('css');
+        const jsInput = document.getElementById('js');
+        const output = document.getElementById('output');
+        const librarySelector = document.getElementById('librarySelector');
+
+        function updateOutput() {
+            const html = htmlInput.value;
+            const css = cssInput.value;
+            const js = jsInput.value;
+            const libraryChoice = librarySelector.value;
+
+            let scripts = '';
+            if (libraryChoice === 'p5' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
+            }
+            if (libraryChoice === 'three' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
+            }
+
+            output.contentDocument.open();
+            output.contentDocument.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>${css}</style>
+                </head>
+                <body>${html}${scripts}<script>${js}<\/script></body>
+                </html>
+            `);
+            output.contentDocument.close();
+        }
+
+        function exportHTML() {
+            const fullDocument = output.contentDocument.documentElement.outerHTML;
+            const blob = new Blob([fullDocument], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'exported_html.html';
+            link.click();
+        }
 
         // Calculator functionality
         const calcDisplay = document.getElementById('calc-display');
@@ -661,37 +736,6 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Code editor functionality
-        const codeInput = document.getElementById('code-input');
-        const runCodeBtn = document.getElementById('runCode');
-        const codeOutput = document.getElementById('code-output');
-
-        runCodeBtn.addEventListener('click', () => {
-            const code = codeInput.value;
-            let output;
-            try {
-                // Create a secure environment for code execution
-                const secureEval = new Function('code', `
-                    'use strict';
-                    const console = {
-                        log: (...args) => output += args.join(' ') + '\\n',
-                        error: (...args) => output += 'Error: ' + args.join(' ') + '\\n'
-                    };
-                    let output = '';
-                    try {
-                        ${code}
-                    } catch (e) {
-                        console.error(e);
-                    }
-                    return output;
-                `);
-                output = secureEval(code);
-            } catch (e) {
-                output = 'Error: ' + e.message;
-            }
-            codeOutput.textContent = output || 'No output';
-        });
-
         // Bulletin board functionality
         const bulletinBody = document.getElementById('bulletin-body');
         const addEntryBtn = document.getElementById('addEntryBtn');
@@ -822,646 +866,7 @@
 
         updateBitcoinPrice();
         setInterval(updateBitcoinPrice, 60000); // Update every minute
-
-        // Additional utility functions
-
-        // Format currency
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
-        }
-
-        // Calculate compound interest
-        function calculateCompoundInterest(principal, rate, time, frequency) {
-            const r = rate / 100 / frequency;
-            const n = frequency * time;
-            return principal * Math.pow(1 + r, n);
-        }
-
-        // Generate random color
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-
-        // Debounce function for performance optimization
-        function debounce(func, delay) {
-            let timeoutId;
-            return function (...args) {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => func.apply(this, args), delay);
-            };
-        }
-
-        // Example usage of utility functions
-        console.log('Formatted currency:', formatCurrency(1234.56));
-        console.log('Compound interest:', calculateCompoundInterest(1000, 5, 10, 12));
-        console.log('Random color:', getRandomColor());
-
-        // Performance optimization for window resize event
-        const debouncedResizeCanvas = debounce(resizeCanvas, 250);
-        window.removeEventListener('resize', resizeCanvas);
-        window.addEventListener('resize', debouncedResizeCanvas);
-
-        // Initialize tooltips for better user experience
-        const tooltips = {
-            calculator: 'Perform financial calculations',
-            whiteboard: 'Sketch and visualize your ideas',
-            codeEditor: 'Write and test JavaScript code',
-            bulletinBoard: 'View and manage financial entries',
-            contactForm: 'Get in touch with our team'
-        };
-
-        Object.entries(tooltips).forEach(([id, text]) => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.setAttribute('title', text);
-            }
-        });
-
-        // Add keyboard shortcuts for improved accessibility
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case '1':
-                        e.preventDefault();
-                        document.querySelector('a[href="#calculator"]').click();
-                        break;
-                    case '2':
-                        e.preventDefault();
-                        document.querySelector('a[href="#whiteboard"]').click();
-                        break;
-                    case '3':
-                        e.preventDefault();
-                        document.querySelector('a[href="#code-editor"]').click();
-                        break;
-                    case '4':
-                        e.preventDefault();
-                        document.querySelector('a[href="#bulletin-board"]').click();
-                        break;
-                    case '5':
-                        e.preventDefault();
-                        document.querySelector('a[href="#contact"]').click();
-                        break;
-                }
-            }
-        });
-
-        // Data visualization functionality
-        function createChart(data, chartType) {
-            const ctx = document.createElement('canvas').getContext('2d');
-            document.body.appendChild(ctx.canvas);
-            
-            return new Chart(ctx, {
-                type: chartType,
-                data: data,
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        // Example usage of chart creation
-        const sampleData = {
-            labels: ['January', 'February', 'March', 'April', 'May'],
-            datasets: [{
-                label: 'Sample Data',
-                data: [12, 19, 3, 5, 2],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        };
-
-        const sampleChart = createChart(sampleData, 'bar');
-
-        // Financial calculator functions
-        function calculateMortgage(principal, interestRate, loanTerm) {
-            const monthlyRate = interestRate / 100 / 12;
-            const numberOfPayments = loanTerm * 12;
-            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-            return monthlyPayment;
-        }
-
-        function calculateROI(initialInvestment, finalValue) {
-            return ((finalValue - initialInvestment) / initialInvestment) * 100;
-        }
-
-        function calculateInflationAdjustedReturn(nominalRate, inflationRate) {
-            return (1 + nominalRate / 100) / (1 + inflationRate / 100) - 1;
-        }
-
-        // Example usage of financial calculator functions
-        console.log('Monthly Mortgage Payment:', calculateMortgage(200000, 3.5, 30));
-        console.log('Return on Investment:', calculateROI(1000, 1500));
-        console.log('Inflation Adjusted Return:', calculateInflationAdjustedReturn(8, 3));
-
-        // Implement a simple stock portfolio tracker
-        class Stock {
-            constructor(symbol, shares, purchasePrice) {
-                this.symbol = symbol;
-                this.shares = shares;
-                this.purchasePrice = purchasePrice;
-            }
-
-            getCurrentValue(currentPrice) {
-                return this.shares * currentPrice;
-            }
-
-            getProfit(currentPrice) {
-                return this.getCurrentValue(currentPrice) - (this.shares * this.purchasePrice);
-            }
-        }
-
-        class Portfolio {
-            constructor() {
-                this.stocks = [];
-            }
-
-            addStock(stock) {
-                this.stocks.push(stock);
-            }
-
-            removeStock(symbol) {
-                this.stocks = this.stocks.filter(stock => stock.symbol !== symbol);
-            }
-
-            getTotalValue(currentPrices) {
-                return this.stocks.reduce((total, stock) => {
-                    return total + stock.getCurrentValue(currentPrices[stock.symbol]);
-                }, 0);
-            }
-
-            getTotalProfit(currentPrices) {
-                return this.stocks.reduce((total, stock) => {
-                    return total + stock.getProfit(currentPrices[stock.symbol]);
-                }, 0);
-            }
-        }
-
-        // Example usage of the stock portfolio tracker
-        const myPortfolio = new Portfolio();
-        myPortfolio.addStock(new Stock('AAPL', 10, 150));
-        myPortfolio.addStock(new Stock('GOOGL', 5, 2000));
-
-        const currentPrices = {
-            'AAPL': 170,
-            'GOOGL': 2200
-        };
-
-        console.log('Total Portfolio Value:', myPortfolio.getTotalValue(currentPrices));
-        console.log('Total Portfolio Profit:', myPortfolio.getTotalProfit(currentPrices));
-
-        // Implement a basic risk assessment quiz
-        const riskQuestions = [
-            {
-                question: "How would you react if your investments lost 20% in a year?",
-                answers: [
-                    { text: "Sell everything immediately", score: 1 },
-                    { text: "Sell some investments", score: 2 },
-                    { text: "Do nothing", score: 3 },
-                    { text: "Buy more at lower prices", score: 4 }
-                ]
-            },
-            {
-                question: "What's your investment time horizon?",
-                answers: [
-                    { text: "0-2 years", score: 1 },
-                    { text: "3-5 years", score: 2 },
-                    { text: "6-10 years", score: 3 },
-                    { text: "10+ years", score: 4 }
-                ]
-            },
-            {
-                question: "How much financial risk are you willing to take?",
-                answers: [
-                    { text: "None", score: 1 },
-                    { text: "A little", score: 2 },
-                    { text: "A moderate amount", score: 3 },
-                    { text: "A lot", score: 4 }
-                ]
-            }
-        ];
-
-        function calculateRiskTolerance(answers) {
-            const totalScore = answers.reduce((sum, answer) => sum + answer, 0);
-            const averageScore = totalScore / answers.length;
-
-            if (averageScore <= 1.5) return "Very Conservative";
-            if (averageScore <= 2.5) return "Conservative";
-            if (averageScore <= 3.5) return "Moderate";
-            return "Aggressive";
-        }
-
-        // Example usage of the risk assessment quiz
-        const userAnswers = [3, 4, 2]; // Sample user answers
-        console.log('Risk Tolerance:', calculateRiskTolerance(userAnswers));
-
-        // Implement a basic budget calculator
-        class BudgetCategory {
-            constructor(name, plannedAmount) {
-                this.name = name;
-                this.plannedAmount = plannedAmount;
-                this.actualAmount = 0;
-            }
-
-            addExpense(amount) {
-                this.actualAmount += amount;
-            }
-
-            getRemainingBudget() {
-                return this.plannedAmount - this.actualAmount;
-            }
-        }
-
-        class Budget {
-            constructor() {
-                this.categories = {};
-            }
-
-            addCategory(name, plannedAmount) {
-                this.categories[name] = new BudgetCategory(name, plannedAmount);
-            }
-
-            addExpense(category, amount) {
-                if (this.categories[category]) {
-                    this.categories[category].addExpense(amount);
-                } else {
-                    console.error(`Category "${category}" does not exist.`);
-                }
-            }
-
-            getTotalBudget() {
-                return Object.values(this.categories).reduce((total, category) => {
-                    return total + category.plannedAmount;
-                }, 0);
-            }
-
-            getTotalExpenses() {
-                return Object.values(this.categories).reduce((total, category) => {
-                    return total + category.actualAmount;
-                }, 0);
-            }
-
-            getRemainingBudget() {
-                return this.getTotalBudget() - this.getTotalExpenses();
-            }
-        }
-
-        // Example usage of the budget calculator
-        const myBudget = new Budget();
-        myBudget.addCategory('Housing', 1000);
-        myBudget.addCategory('Food', 500);
-        myBudget.addCategory('Entertainment', 200);
-
-        myBudget.addExpense('Housing', 950);
-        myBudget.addExpense('Food', 450);
-        myBudget.addExpense('Entertainment', 180);
-
-        console.log('Total Budget:', myBudget.getTotalBudget());
-        console.log('Total Expenses:', myBudget.getTotalExpenses());
-        console.log('Remaining Budget:', myBudget.getRemainingBudget());
-
-        // Implement a basic loan amortization schedule generator
-        function generateAmortizationSchedule(principal, annualInterestRate, loanTermYears) {
-            const monthlyRate = annualInterestRate / 100 / 12;
-            const numberOfPayments = loanTermYears * 12;
-            const monthlyPayment = calculateMortgage(principal, annualInterestRate, loanTermYears);
-
-            let remainingBalance = principal;
-            const schedule = [];
-
-            for (let month = 1; month <= numberOfPayments; month++) {
-                const interestPayment = remainingBalance * monthlyRate;
-                const principalPayment = monthlyPayment - interestPayment;
-                remainingBalance -= principalPayment;
-
-                schedule.push({
-                    month,
-                    payment: monthlyPayment,
-                    principalPayment,
-                    interestPayment,
-                    remainingBalance
-                });
-            }
-
-            return schedule;
-        }
-
-        // Example usage of the amortization schedule generator
-        const loanSchedule = generateAmortizationSchedule(200000, 3.5, 30);
-        console.log('Loan Amortization Schedule:', loanSchedule.slice(0, 12)); // Show first year
-
-        // Implement a basic retirement calculator
-        function calculateRetirementSavings(currentAge, retirementAge, currentSavings, monthlySavings, annualReturn) {
-            const yearsUntilRetirement = retirementAge - currentAge;
-            const monthlyReturn = annualReturn / 100 / 12;
-            let totalSavings = currentSavings;
-
-            for (let month = 1; month <= yearsUntilRetirement * 12; month++) {
-                totalSavings += monthlySavings;
-                totalSavings *= (1 + monthlyReturn);
-            }
-
-            return totalSavings;
-        }
-
-        // Example usage of the retirement calculator
-        const retirementSavings = calculateRetirementSavings(30, 65, 50000, 500, 7);
-        console.log('Estimated Retirement Savings:', formatCurrency(retirementSavings));
-
-        // Implement a basic currency converter
-        const exchangeRates = {
-            USD: 1,
-            EUR: 0.84,
-            GBP: 0.72,
-            JPY: 110.25,
-            CAD: 1.25
-        };
-
-        function convertCurrency(amount, fromCurrency, toCurrency) {
-            const amountInUSD = amount / exchangeRates[fromCurrency];
-            return amountInUSD * exchangeRates[toCurrency];
-        }
-
-        // Example usage of the currency converter
-        console.log('100 USD to EUR:', convertCurrency(100, 'USD', 'EUR'));
-        console.log('100 EUR to JPY:', convertCurrency(100, 'EUR', 'JPY'));
-
-        // Implement a basic tax calculator
-        function calculateIncomeTax(income, taxBrackets) {
-            let remainingIncome = income;
-            let totalTax = 0;
-
-            for (const bracket of taxBrackets) {
-                if (remainingIncome > bracket.threshold) {
-                    const taxableAmount = Math.min(remainingIncome - bracket.threshold, bracket.ceiling ? bracket.ceiling - bracket.threshold : Infinity);
-                    totalTax += taxableAmount * (bracket.rate / 100);
-                    remainingIncome -= taxableAmount;
-                } else {
-                    break;
-                }
-            }
-
-            return totalTax;
-        }
-
-        // Example usage of the tax calculator
-        const taxBrackets = [
-            { threshold: 0, rate: 10 },
-            { threshold: 9950, rate: 12 },
-            { threshold: 40525, rate: 22 },
-            { threshold: 86375, rate: 24 },
-            { threshold: 164925, rate: 32 },
-            { threshold: 209425, rate: 35 },
-            { threshold: 523600, rate: 37 }
-        ];
-
-        console.log('Estimated Income Tax for $50,000:', calculateIncomeTax(50000, taxBrackets));
-
-        // Final touches and performance optimizations
-        document.addEventListener('DOMContentLoaded', () => {
-            // Lazy load images (if any)
-            const lazyImages = document.querySelectorAll('img[data-src]');
-            const lazyLoadImage = (image) => {
-                image.src = image.dataset.src;
-                image.removeAttribute('data-src');
-            };
-
-            if ('IntersectionObserver' in window) {
-                const imageObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            lazyLoadImage(entry.target);
-                            imageObserver.unobserve(entry.target);
-                        }
-                    });
-                });
-
-                lazyImages.forEach(image => imageObserver.observe(image));
-            } else {
-                lazyImages.forEach(lazyLoadImage);
-            }
-
-            // Add smooth scrolling for internal links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
-        });
-
-        // Implement a basic stock option calculator
-        function calculateOptionPrice(spotPrice, strikePrice, timeToExpiry, riskFreeRate, volatility, optionType) {
-            const d1 = (Math.log(spotPrice / strikePrice) + (riskFreeRate + 0.5 * volatility ** 2) * timeToExpiry) / (volatility * Math.sqrt(timeToExpiry));
-            const d2 = d1 - volatility * Math.sqrt(timeToExpiry);
-
-            function normalCDF(x) {
-                const t = 1 / (1 + 0.2316419 * Math.abs(x));
-                const d = 0.3989423 * Math.exp(-x * x / 2);
-                const probability = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
-                return x > 0 ? 1 - probability : probability;
-            }
-
-            if (optionType === 'call') {
-                return spotPrice * normalCDF(d1) - strikePrice * Math.exp(-riskFreeRate * timeToExpiry) * normalCDF(d2);
-            } else if (optionType === 'put') {
-                return strikePrice * Math.exp(-riskFreeRate * timeToExpiry) * normalCDF(-d2) - spotPrice * normalCDF(-d1);
-            }
-        }
-
-        // Example usage of the stock option calculator
-        console.log('Call Option Price:', calculateOptionPrice(100, 100, 1, 0.05, 0.2, 'call'));
-        console.log('Put Option Price:', calculateOptionPrice(100, 100, 1, 0.05, 0.2, 'put'));
-
-        // Implement a basic bond pricing calculator
-        function calculateBondPrice(faceValue, couponRate, yearsToMaturity, yieldToMaturity, paymentsPerYear) {
-            const numberOfPayments = yearsToMaturity * paymentsPerYear;
-            const couponPayment = (faceValue * couponRate) / paymentsPerYear;
-            const discountRate = yieldToMaturity / paymentsPerYear;
-
-            let presentValue = 0;
-            for (let i = 1; i <= numberOfPayments; i++) {
-                presentValue += couponPayment / Math.pow(1 + discountRate, i);
-            }
-            presentValue += faceValue / Math.pow(1 + discountRate, numberOfPayments);
-
-            return presentValue;
-        }
-
-        // Example usage of the bond pricing calculator
-        console.log('Bond Price:', calculateBondPrice(1000, 0.05, 10, 0.06, 2));
-
-        // Implement a basic Monte Carlo simulation for portfolio analysis
-        function monteCarloSimulation(initialInvestment, years, annualReturn, annualVolatility, simulations) {
-            const results = [];
-
-            for (let i = 0; i < simulations; i++) {
-                let investment = initialInvestment;
-                for (let year = 1; year <= years; year++) {
-                    const randomReturn = Math.random() * 2 - 1; // Random number between -1 and 1
-                    const annualPerformance = annualReturn + randomReturn * annualVolatility;
-                    investment *= (1 + annualPerformance);
-                }
-                results.push(investment);
-            }
-
-            return results;
-        }
-
-        // Example usage of the Monte Carlo simulation
-        const simulationResults = monteCarloSimulation(10000, 10, 0.07, 0.15, 1000);
-        console.log('Monte Carlo Simulation Results:', {
-            min: Math.min(...simulationResults),
-            max: Math.max(...simulationResults),
-            average: simulationResults.reduce((sum, val) => sum + val, 0) / simulationResults.length
-        });
-
-        // Implement a basic DCF (Discounted Cash Flow) calculator
-        function calculateDCF(cashFlows, discountRate) {
-            return cashFlows.reduce((acc, cashFlow, index) => {
-                return acc + cashFlow / Math.pow(1 + discountRate, index + 1);
-            }, 0);
-        }
-
-        // Example usage of the DCF calculator
-        const projectedCashFlows = [1000, 1200, 1500, 1800, 2000];
-        console.log('Discounted Cash Flow:', calculateDCF(projectedCashFlows, 0.1));
-
-        // Implement a basic CAPM (Capital Asset Pricing Model) calculator
-        function calculateExpectedReturn(riskFreeRate, beta, marketReturn) {
-            return riskFreeRate + beta * (marketReturn - riskFreeRate);
-        }
-
-        // Example usage of the CAPM calculator
-        console.log('Expected Return:', calculateExpectedReturn(0.02, 1.2, 0.08));
-
-        // Implement a basic Sharpe ratio calculator
-        function calculateSharpeRatio(portfolioReturn, riskFreeRate, portfolioStdDev) {
-            return (portfolioReturn - riskFreeRate) / portfolioStdDev;
-        }
-
-        // Example usage of the Sharpe ratio calculator
-        console.log('Sharpe Ratio:', calculateSharpeRatio(0.12, 0.02, 0.18));
-
-        // Implement a basic dividend discount model
-        function calculateDividendDiscountModel(currentDividend, growthRate, requiredRate) {
-            return currentDividend * (1 + growthRate) / (requiredRate - growthRate);
-        }
-
-        // Example usage of the dividend discount model
-        console.log('Stock Value (DDM):', calculateDividendDiscountModel(2, 0.05, 0.1));
-
-        // Implement a basic EBITDA multiple valuation
-        function calculateEBITDAMultiple(ebitda, enterpriseValue) {
-            return enterpriseValue / ebitda;
-        }
-
-        // Example usage of the EBITDA multiple calculation
-        console.log('EBITDA Multiple:', calculateEBITDAMultiple(1000000, 5000000));
-
-        // Implement a basic P/E ratio calculator
-        function calculatePERatio(stockPrice, earningsPerShare) {
-            return stockPrice / earningsPerShare;
-        }
-
-        // Example usage of the P/E ratio calculator
-        console.log('P/E Ratio:', calculatePERatio(50, 2.5));
-
-        // Implement a basic Altman Z-Score calculator for bankruptcy prediction
-        function calculateAltmanZScore(workingCapital, retainedEarnings, ebit, marketValueEquity, sales, totalAssets) {
-            const x1 = workingCapital / totalAssets;
-            const x2 = retainedEarnings / totalAssets;
-            const x3 = ebit / totalAssets;
-            const x4 = marketValueEquity / totalAssets;
-            const x5 = sales / totalAssets;
-
-            return 1.2 * x1 + 1.4 * x2 + 3.3 * x3 + 0.6 * x4 + 1.0 * x5;
-        }
-
-        // Example usage of the Altman Z-Score calculator
-        console.log('Altman Z-Score:', calculateAltmanZScore(100000, 200000, 150000, 500000, 1000000, 800000));
-
-        // Implement a basic Black-Scholes option pricing model
-        function blackScholesOptionPrice(spotPrice, strikePrice, timeToExpiry, riskFreeRate, volatility, optionType) {
-            const d1 = (Math.log(spotPrice / strikePrice) + (riskFreeRate + 0.5 * volatility ** 2) * timeToExpiry) / (volatility * Math.sqrt(timeToExpiry));
-            const d2 = d1 - volatility * Math.sqrt(timeToExpiry);
-
-            function normalCDF(x) {
-                const t = 1 / (1 + 0.2316419 * Math.abs(x));
-                const d = 0.3989423 * Math.exp(-x * x / 2);
-                const probability = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
-                return x > 0 ? 1 - probability : probability;
-            }
-
-            if (optionType === 'call') {
-                return spotPrice * normalCDF(d1) - strikePrice * Math.exp(-riskFreeRate * timeToExpiry) * normalCDF(d2);
-            } else if (optionType === 'put') {
-                return strikePrice * Math.exp(-riskFreeRate * timeToExpiry) * normalCDF(-d2) - spotPrice * normalCDF(-d1);
-            }
-        }
-
-        // Example usage of the Black-Scholes option pricing model
-        console.log('Black-Scholes Call Option Price:', blackScholesOptionPrice(100, 100, 1, 0.05, 0.2, 'call'));
-        console.log('Black-Scholes Put Option Price:', blackScholesOptionPrice(100, 100, 1, 0.05, 0.2, 'put'));
-
-        // Implement a basic Fibonacci retracement calculator
-        function calculateFibonacciRetracements(high, low) {
-            const difference = high - low;
-            return {
-                '23.6%': high - 0.236 * difference,
-                '38.2%': high - 0.382 * difference,
-                '50.0%': high - 0.5 * difference,
-                '61.8%': high - 0.618 * difference,
-                '78.6%': high - 0.786 * difference
-            };
-        }
-
-        // Example usage of the Fibonacci retracement calculator
-        console.log('Fibonacci Retracements:', calculateFibonacciRetracements(100, 50));
-
-        // Implement a basic moving average calculator
-        function calculateMovingAverage(data, period) {
-            const result = [];
-            for (let i = period - 1; i < data.length; i++) {
-                const sum = data.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
-                result.push(sum / period);
-            }
-            return result;
-        }
-
-        // Example usage of the moving average calculator
-        const priceData = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
-        console.log('5-day Moving Average:', calculateMovingAverage(priceData, 5));
-
-        // Implement a basic RSI (Relative Strength Index) calculator
-        function calculateRSI(data, period) {
-            const changes = data.slice(1).map((price, index) => price - data[index]);
-            const gains = changes.map(change => change > 0 ? change : 0);
-            const losses = changes.map(change => change < 0 ? -change : 0);
-
-            const avgGain = calculateMovingAverage(gains, period)[0];
-            const avgLoss = calculateMovingAverage(losses, period)[0];
-
-            const rs = avgGain / avgLoss;
-            return 100 - (100 / (1 + rs));
-        }
-
-        // Example usage of the RSI calculator
-        console.log('14-day RSI:', calculateRSI(priceData, 14));
-
-        console.log('DevMoney.co application initialized successfully!');
     </script>
 </body>
 </html>
+
