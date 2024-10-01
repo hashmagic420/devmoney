@@ -1,18 +1,17 @@
 const fastify = require('fastify')({ logger: true });
 const WebSocket = require('ws');
-
-// Serve static HTML or your front-end
 const path = require('path');
 const fs = require('fs');
 
+// Serve static HTML or your front-end
 fastify.get('/', (request, reply) => {
   const filePath = path.join(__dirname, 'index.html');
   const fileStream = fs.createReadStream(filePath);
   reply.type('text/html').send(fileStream);
 });
 
-// Start the Fastify server on Heroku's dynamic port
-const port = process.env.PORT || 3000; // Default to 3000 if not in Heroku
+// Start the Fastify server on Heroku's dynamic port or local port 3000
+const port = process.env.PORT || 3000;  // Heroku sets `process.env.PORT`
 fastify.listen(port, '0.0.0.0', (err, address) => {
   if (err) {
     fastify.log.error(err);
