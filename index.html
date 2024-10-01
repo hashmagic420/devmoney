@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-Time Collaborative Canvas</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <title>Collaborative Canvas</title>
   <style>
     canvas {
       border: 1px solid black;
@@ -20,81 +19,85 @@
 <body>
   <div id="app">
     <div id="toolbar">
-      <input type="color" v-model="color" /> Select Color
-      <input type="range" min="1" max="20" v-model="lineWidth" /> Brush Size: {{ lineWidth }}
-      <button @click="clearCanvas">Clear Canvas</button>
+      <input type="color" id="colorPicker" /> Select Color
+      <input type="range" min="1" max="20" id="brushSize" /> Brush Size
     </div>
-    <canvas id="collabCanvas" width="800" height="600" @mousedown="startDrawing" @mouseup="stopDrawing" @mousemove="draw"></canvas>
+    <canvas id="collabCanvas" width="800" height="600"></canvas>
   </div>
 
   <script>
-    new Vue({
-      el: '#app',
-      data: {
-        drawing: false,
-        color: '#000000',
-        lineWidth: 5,
-        ctx: null,
-        socket: null,
-      },
-      mounted() {
-        const canvas = document.getElementById('collabCanvas');
-        this.ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('collabCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let color = '#000000';
+    let lineWidth = 5;
+    let lastX = 0;
+    let lastY = 0;
 
-        // Establish WebSocket connection
-        this.socket = new WebSocket('ws://localhost:3001');
+    // Set up WebSocket connection (replace with your Heroku WebSocket server URL)
+    const socket = new WebSocket('wss://agile-springs-40960-0cc3a8415b5f.herokuapp.com');
 
-        // Handle incoming drawing data
-        this.socket.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          this.drawOnCanvas(data.x0, data.y0, data.x1, data.y1, data.color, data.lineWidth, false);
-        };
-      },
-      methods: {
-        startDrawing(event) {
-          this.drawing = true;
-          this.lastX = event.offsetX;
-          this.lastY = event.offsetY;
-        },
-        stopDrawing() {
-          this.drawing = false;
-        },
-        draw(event) {
-          if (!this.drawing) return;
-          const newX = event.offsetX;
-          const newY = event.offsetY;
+    // Handle incoming drawing data
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      drawOnCanvas(data.x0, data.y0, data.x1, data.y1, data.color, data.lineWidth, false);
+    };
 
-          // Draw locally
-          this.drawOnCanvas(this.lastX, this.lastY, newX, newY, this.color, this.lineWidth, true);
+    function startDrawing(event) {
+      drawing = true;
+      lastX = event.offsetX;
+      lastY = event.offsetY;
+    }
 
-          // Emit drawing data to WebSocket server
-          this.socket.send(JSON.stringify({
-            x0: this.lastX,
-            y0: this.lastY,
-            x1: newX,
-            y1: newY,
-            color: this.color,
-            lineWidth: this.lineWidth
-          }));
+    function stopDrawing() {
+      drawing = false;
+    }
 
-          this.lastX = newX;
-          this.lastY = newY;
-        },
-        drawOnCanvas(x0, y0, x1, y1, color, lineWidth, emit) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(x0, y0);
-          this.ctx.lineTo(x1, y1);
-          this.ctx.strokeStyle = color;
-          this.ctx.lineWidth = lineWidth;
-          this.ctx.stroke();
-          this.ctx.closePath();
-        },
-        clearCanvas() {
-          this.ctx.clearRect(0, 0, 800, 600);
-        }
-      }
+    function draw(event) {
+      if (!drawing) return;
+      const newX = event.offsetX;
+      const newY = event.offsetY;
+
+      // Draw locally
+      drawOnCanvas(lastX, lastY, newX, newY, color, lineWidth, true);
+
+      // Emit drawing data to WebSocket server
+      socket.send(JSON.stringify({
+        x0: lastX,
+        y0: lastY,
+        x1: newX,
+        y1: newY,
+        color: color,
+        lineWidth: lineWidth
+      }));
+
+      lastX = newX;
+      lastY = newY;
+    }
+
+    function drawOnCanvas(x0, y0, x1, y1, color, lineWidth, emit) {
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    // Event listeners for drawing
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+
+    // Update color and brush size
+    document.getElementById('colorPicker').addEventListener('input', (e) => {
+      color = e.target.value;
+    });
+
+    document.getElementById('brushSize').addEventListener('input', (e) => {
+      lineWidth = e.target.value;
     });
   </script>
 </body>
 </html>
-
