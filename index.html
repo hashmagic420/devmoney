@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevMoney.co - Comprehensive Financial Tools with Magic HTML Editor and Matrix Animation</title>
+    <title>DevMoney.co - Financial Tools with Crypto Portfolio, Whiteboard, Code Editor</title>
     <style>
         /* Reset and base styles */
         * {
@@ -316,6 +316,7 @@
                 <a href="#code-editor" class="nav-item">Code Editor</a>
                 <a href="#magic-editor" class="nav-item">Magic Editor</a>
                 <a href="#bulletin-board" class="nav-item">Bulletin Board</a>
+                <a href="#crypto-portfolio" class="nav-item">Crypto Portfolio Tracker</a>
                 <a href="#contact" class="nav-item">Contact</a>
             </nav>
         </header>
@@ -355,6 +356,30 @@
                 <input type="range" id="brushSize" class="brush-size" min="1" max="20" value="5">
             </div>
             <canvas id="canvas"></canvas>
+        </section>
+
+        <!-- Crypto Portfolio Tracker Section -->
+        <section id="crypto-portfolio" class="crypto-portfolio neuromorphic">
+            <h2>Crypto Portfolio Tracker</h2>
+            <div id="controls">
+                <label for="cryptoName">Cryptocurrency:</label>
+                <input type="text" id="cryptoName" placeholder="e.g., Bitcoin" />
+                <label for="cryptoAmount">Amount:</label>
+                <input type="number" id="cryptoAmount" placeholder="e.g., 1.5" />
+                <label for="cryptoPrice">Price:</label>
+                <input type="number" id="cryptoPrice" placeholder="e.g., 50000" />
+                <label for="cryptoDate">Date:</label>
+                <input type="date" id="cryptoDate" />
+                <label for="cryptoTime">Time:</label>
+                <input type="time" id="cryptoTime" />
+                <button id="addCryptoBtn">Add to Portfolio</button>
+                <button id="plotChartBtn">Plot Chart</button>
+                <button id="downloadBtn">Download</button>
+            </div>
+            <div id="portfolioList"></div>
+            <div id="chartContainer">
+                <canvas id="portfolioChart"></canvas>
+            </div>
         </section>
 
         <section id="magic-editor" class="magic-editor-container neuromorphic">
@@ -424,7 +449,157 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        let portfolio = JSON.parse(localStorage.getItem("portfolio")) || [];
+        let portfolioList = document.getElementById("portfolioList");
+        let cryptoNameInput = document.getElementById("cryptoName");
+        let cryptoAmountInput = document.getElementById("cryptoAmount");
+        let cryptoPriceInput = document.getElementById("cryptoPrice");
+        let cryptoDateInput = document.getElementById("cryptoDate");
+        let cryptoTimeInput = document.getElementById("cryptoTime");
+        let addCryptoBtn = document.getElementById("addCryptoBtn");
+        let plotChartBtn = document.getElementById("plotChartBtn");
+        let downloadBtn = document.getElementById("downloadBtn");
+        let portfolioChart;
+
+        addCryptoBtn.addEventListener("click", addCryptoToPortfolio);
+        plotChartBtn.addEventListener("click", updatePortfolioChart);
+        downloadBtn.addEventListener("click", downloadPortfolio);
+
+        window.addEventListener("load", () => {
+          updatePortfolioList();
+          if (portfolio.length > 0) {
+            updatePortfolioChart();
+          }
+        });
+
+        function addCryptoToPortfolio() {
+          let name = cryptoNameInput.value.trim();
+          let amount = parseFloat(cryptoAmountInput.value);
+          let price = parseFloat(cryptoPriceInput.value);
+          let date = cryptoDateInput.value;
+          let time = cryptoTimeInput.value;
+
+          if (name && !isNaN(amount) && !isNaN(price) && date && time) {
+            let totalValue = amount * price;
+            portfolio.push({ name, amount, price, totalValue, date, time });
+            updatePortfolioList();
+            updatePortfolioChart();
+            saveToLocal();
+            clearInputs();
+          }
+        }
+
+        function updatePortfolioList() {
+          portfolioList.innerHTML = "";
+          portfolio.forEach((crypto, index) => {
+            let div = document.createElement("div");
+            div.className = "crypto-item";
+            div.innerHTML = `
+                        <span><strong>${index + 1}. ${
+              crypto.name
+            }</strong></span>
+                        <span>Amount: ${crypto.amount}</span>
+                        <span>Price: ${crypto.price}</span>
+                        <span>Total Value: ${crypto.totalValue.toFixed(
+                          2
+                        )}</span>
+                        <span>Date: ${crypto.date}</span>
+                        <span>Time: ${crypto.time}</span>
+                        <button onclick="removeCrypto(${index})">Remove</button>
+                    `;
+            portfolioList.appendChild(div);
+          });
+        }
+
+        function updatePortfolioChart() {
+          let labels = portfolio.map(
+            (crypto) => `${crypto.name} (${crypto.date} ${crypto.time})`
+          );
+          let data = portfolio.map((crypto) => crypto.totalValue);
+
+          if (portfolioChart) {
+            portfolioChart.destroy();
+          }
+
+          portfolioChart = new Chart(
+            document.getElementById("portfolioChart"),
+            {
+              type: "pie",
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: "Portfolio Value",
+                    data: data,
+                    backgroundColor: labels.map(() => getRandomColor()),
+                  },
+                ],
+              },
+            }
+          );
+        }
+
+        function getRandomColor() {
+          let letters = "0123456789ABCDEF";
+          let color = "#";
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+
+        function clearInputs() {
+          cryptoNameInput.value = "";
+          cryptoAmountInput.value = "";
+          cryptoPriceInput.value = "";
+          cryptoDateInput.value = "";
+          cryptoTimeInput.value = "";
+        }
+
+        function removeCrypto(index) {
+          portfolio.splice(index, 1);
+          updatePortfolioList();
+          updatePortfolioChart();
+          saveToLocal();
+        }
+
+        function saveToLocal() {
+          localStorage.setItem("portfolio", JSON.stringify(portfolio));
+        }
+
+        function downloadPortfolio() {
+          let element = document.createElement("a");
+          let data = portfolio
+            .map(
+              (crypto, index) =>
+                `${index + 1}. ${crypto.name} - Amount: ${
+                  crypto.amount
+                }, Price: ${
+                  crypto.price
+                }, Total Value: ${crypto.totalValue.toFixed(2)}, Date: ${
+                  crypto.date
+                }, Time: ${crypto.time}`
+            )
+            .join("\n");
+
+          element.setAttribute(
+            "href",
+            "data:text/plain;charset=utf-8," + encodeURIComponent(data)
+          );
+          element.setAttribute("download", "portfolio.txt");
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+
+          let chartDataURL = portfolioChart.toBase64Image();
+          let chartLink = document.createElement("a");
+          chartLink.href = chartDataURL;
+          chartLink.download = "portfolio_chart.png";
+          chartLink.click();
+        }
+
         // Matrix rain animation
         const matrixCanvas = document.getElementById('matrix-canvas');
         const matrixCtx = matrixCanvas.getContext('2d');
@@ -508,124 +683,6 @@
             link.download = 'exported_html.html';
             link.click();
         }
-
-        // Calculator functionality
-        const calcDisplay = document.getElementById('calc-display');
-        const calcButtons = document.querySelectorAll('.calc-btn');
-
-        let currentInput = '';
-        let currentOperation = null;
-        let prevInput = '';
-
-        calcButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const value = button.dataset.value;
-
-                if (value === 'C') {
-                    currentInput = '';
-                    prevInput = '';
-                    currentOperation = null;
-                } else if (value === '=') {
-                    if (currentOperation && prevInput && currentInput) {
-                        currentInput = eval(`${prevInput} ${currentOperation} ${currentInput}`);
-                        prevInput = '';
-                        currentOperation = null;
-                    }
-                } else if (['+', '-', '*', '/'].includes(value)) {
-                    if (currentInput) {
-                        if (prevInput) {
-                            currentInput = eval(`${prevInput} ${currentOperation} ${currentInput}`);
-                        }
-                        prevInput = currentInput;
-                        currentInput = '';
-                        currentOperation = value;
-                    }
-                } else {
-                    currentInput += value;
-                }
-
-                calcDisplay.value = currentInput || '0';
-            });
-        });
-
-        // WebSocket real-time whiteboard functionality
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const clearBtn = document.getElementById('clearBtn');
-        const colorPicker = document.getElementById('colorPicker');
-        const brushSize = document.getElementById('brushSize');
-
-        let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
-
-        const socket = new WebSocket('wss://your-backend.herokuapp.com');  // Use your Heroku WebSocket URL
-
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-        }
-
-        function draw(x0, y0, x1, y1, color, size, emit) {
-            ctx.beginPath();
-            ctx.moveTo(x0, y0);
-            ctx.lineTo(x1, y1);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = size;
-            ctx.stroke();
-            ctx.closePath();
-
-            if (!emit) return;
-
-            socket.send(JSON.stringify({
-                x0: x0 / canvas.width,
-                y0: y0 / canvas.height,
-                x1: x1 / canvas.width,
-                y1: y1 / canvas.height,
-                color: color,
-                size: size
-            }));
-        }
-
-        canvas.addEventListener('mousedown', (e) => {
-            isDrawing = true;
-            lastX = e.offsetX;
-            lastY = e.offsetY;
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (!isDrawing) return;
-            draw(lastX, lastY, e.offsetX, e.offsetY, colorPicker.value, brushSize.value, true);
-            lastX = e.offsetX;
-            lastY = e.offsetY;
-        });
-
-        canvas.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('mouseout', () => isDrawing = false);
-
-        socket.onmessage = (message) => {
-            const data = JSON.parse(message.data);
-            const x0 = data.x0 * canvas.width;
-            const y0 = data.y0 * canvas.height;
-            const x1 = data.x1 * canvas.width;
-            const y1 = data.y1 * canvas.height;
-            draw(x0, y0, x1, y1, data.color, data.size);
-        };
-
-        clearBtn.addEventListener('click', () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            socket.send(JSON.stringify({ clear: true }));
-        });
-
-        socket.onmessage = (message) => {
-            const data = JSON.parse(message.data);
-            if (data.clear) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        };
-
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
 
         // Bulletin board functionality
         const bulletinBody = document.getElementById('bulletin-body');
@@ -760,4 +817,3 @@
     </script>
 </body>
 </html>
-
