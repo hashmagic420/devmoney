@@ -1,8 +1,7 @@
 {
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "openai": "^4.63.0",
-    "socket.io": "^4.8.0"
+    "fastify": "^4.28.1",
+    "fastify-websocket": "^4.2.2",
+    "ws": "^8.18.0"
   }
 }
