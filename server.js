@@ -1,7 +1,7 @@
 const fastify = require('fastify')({ logger: true });
 const WebSocket = require('ws');
 
-// Serve the frontend
+// Serve static HTML or your front-end
 const path = require('path');
 const fs = require('fs');
 
@@ -11,8 +11,9 @@ fastify.get('/', (request, reply) => {
   reply.type('text/html').send(fileStream);
 });
 
-// Start Fastify on port 3000 (Heroku will manage the port in production)
-fastify.listen(process.env.PORT || 3000, (err, address) => {
+// Start the Fastify server on Heroku's dynamic port
+const port = process.env.PORT || 3000; // Default to 3000 if not in Heroku
+fastify.listen(port, '0.0.0.0', (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
@@ -24,7 +25,7 @@ fastify.listen(process.env.PORT || 3000, (err, address) => {
 
   wss.on('connection', (ws) => {
     ws.on('message', (message) => {
-      // Broadcast drawing data to all connected clients
+      // Broadcast drawing data to all clients
       wss.clients.forEach((client) => {
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(message);
