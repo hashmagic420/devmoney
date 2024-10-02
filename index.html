@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -18,6 +20,7 @@
             background-color: #f0f0f3;
             position: relative;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -25,7 +28,10 @@
             position: relative;
             z-index: 1;
         }
-        h1, h2, h3 {
+
+        h1,
+        h2,
+        h3 {
             margin-bottom: 20px;
         }
 
@@ -37,6 +43,7 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+
         .btn {
             padding: 10px 15px;
             font-size: 16px;
@@ -47,9 +54,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .btn:hover {
             box-shadow: 1px 1px 3px #d1d1d1, -1px -1px 3px #ffffff;
         }
+
         .btn:active {
             box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
         }
@@ -59,6 +68,7 @@
             text-align: center;
             padding: 40px 0;
         }
+
         .header h1 {
             font-size: 3em;
             color: #2c3e50;
@@ -70,6 +80,7 @@
             justify-content: center;
             margin-bottom: 30px;
         }
+
         .nav-item {
             margin: 0 15px;
             text-decoration: none;
@@ -77,6 +88,7 @@
             font-weight: bold;
             transition: color 0.3s ease;
         }
+
         .nav-item:hover {
             color: #2c3e50;
         }
@@ -86,6 +98,7 @@
             max-width: 300px;
             margin: 0 auto;
         }
+
         .calc-display {
             width: 100%;
             height: 60px;
@@ -98,11 +111,13 @@
             box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
             border-radius: 5px;
         }
+
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
+
         .calc-btn {
             padding: 15px;
             font-size: 18px;
@@ -112,23 +127,27 @@
         .whiteboard {
             position: relative;
             height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
         }
+
         #canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: white;
             border-radius: 10px;
-            box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
         }
+
         .toolbar {
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
         }
+
         .color-picker {
             width: 40px;
             height: 40px;
@@ -137,6 +156,7 @@
             overflow: hidden;
             cursor: pointer;
         }
+
         .brush-size {
             width: 100px;
         }
@@ -146,6 +166,7 @@
             display: flex;
             flex-direction: column;
         }
+
         #code-input {
             width: 100%;
             height: 200px;
@@ -159,6 +180,7 @@
             border-radius: 5px;
             resize: vertical;
         }
+
         #code-output {
             width: 100%;
             min-height: 100px;
@@ -173,15 +195,19 @@
             width: 100%;
             border-collapse: collapse;
         }
-        .bulletin-board th, .bulletin-board td {
+
+        .bulletin-board th,
+        .bulletin-board td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
         }
+
         .bulletin-board th {
             background-color: #f2f2f2;
             font-weight: bold;
         }
+
         .bulletin-board tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -191,6 +217,7 @@
             display: flex;
             flex-direction: column;
         }
+
         .form-container input,
         .form-container textarea {
             margin-bottom: 15px;
@@ -200,10 +227,12 @@
             box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
             border-radius: 5px;
         }
+
         .form-container textarea {
             resize: vertical;
             min-height: 100px;
         }
+
         .form-container button {
             align-self: flex-start;
         }
@@ -237,12 +266,14 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+
         .magic-editor {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             overflow: hidden;
         }
+
         .magic-editor textarea {
             flex: 1;
             margin: 5px;
@@ -253,6 +284,7 @@
             font-size: 16px;
             resize: none;
         }
+
         #output {
             flex-grow: 1;
             background-color: #fff;
@@ -260,10 +292,12 @@
             border: 1px solid #333;
             margin: 5px;
         }
+
         .editor-controls {
             display: flex;
             justify-content: space-between;
         }
+
         .editor-controls select,
         .editor-controls button {
             padding: 10px;
@@ -274,6 +308,7 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
         .editor-controls button:hover {
             background-color: #D54B1A;
         }
@@ -283,26 +318,36 @@
             .container {
                 padding: 10px;
             }
+
             .nav {
                 flex-direction: column;
                 align-items: center;
             }
+
             .nav-item {
                 margin: 10px 0;
             }
-            .calculator, .whiteboard, .code-editor, .bulletin-board, .form-container {
+
+            .calculator,
+            .whiteboard,
+            .code-editor,
+            .bulletin-board,
+            .form-container {
                 margin-bottom: 30px;
             }
+
             .toolbar {
                 flex-direction: column;
                 align-items: center;
             }
-            .toolbar > * {
+
+            .toolbar>* {
                 margin-bottom: 10px;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Matrix Canvas for the background animation -->
     <canvas id="matrix-canvas"></canvas>
@@ -352,7 +397,7 @@
             <h2>Financial Whiteboard - Real-Time Collaborative Canvas</h2>
             <div class="toolbar">
                 <button id="clearBtn" class="btn">Clear</button>
-                <input type="color" id="colorPicker" class="color-picker">
+                <input type="color" id="colorPicker" class="color-picker" value="#000000">
                 <input type="range" id="brushSize" class="brush-size" min="1" max="20" value="5">
             </div>
             <canvas id="canvas"></canvas>
@@ -449,8 +494,172 @@
         </div>
     </div>
 
+    <!-- Libraries for chart.js and jQuery to handle UI -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
+        // Implementing Calculator Functionality
+        const calcDisplay = document.getElementById('calc-display');
+        const calcButtons = document.querySelectorAll('.calc-btn');
+        let currentInput = '';
+        let operator = '';
+        let previousInput = '';
+        let result = '';
+
+        calcButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.dataset.value;
+                if (value === 'C') {
+                    clearCalculator();
+                } else if (value === '=') {
+                    calculateResult();
+                } else {
+                    handleInput(value);
+                }
+            });
+        });
+
+        function clearCalculator() {
+            currentInput = '';
+            previousInput = '';
+            operator = '';
+            result = '';
+            calcDisplay.value = '';
+        }
+
+        function handleInput(value) {
+            if (['+', '-', '*', '/', '%'].includes(value)) {
+                operator = value;
+                previousInput = currentInput;
+                currentInput = '';
+            } else {
+                currentInput += value;
+            }
+            calcDisplay.value = currentInput;
+        }
+
+        function calculateResult() {
+            const prev = parseFloat(previousInput);
+            const curr = parseFloat(currentInput);
+            if (operator === '+') result = prev + curr;
+            else if (operator === '-') result = prev - curr;
+            else if (operator === '*') result = prev * curr;
+            else if (operator === '/') result = prev / curr;
+            else if (operator === '%') result = prev % curr;
+            calcDisplay.value = result;
+            currentInput = result.toString();
+            operator = '';
+            previousInput = '';
+        }
+
+        // Implementing Whiteboard Functionality
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        let color = document.getElementById('colorPicker').value;
+        let brushSize = document.getElementById('brushSize').value;
+
+        // Ensure the canvas size adjusts to match the size of the canvas container
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        // Event Listeners for color and brush size input
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            color = e.target.value;
+        });
+
+        document.getElementById('brushSize').addEventListener('input', (e) => {
+            brushSize = e.target.value;
+        });
+
+        // Event Listener to start drawing
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        function startDrawing(e) {
+            drawing = true;
+            ctx.beginPath(); // Start a new path for each mouse press
+            draw(e); // Draw the first point where the mouse is clicked
+        }
+
+        function stopDrawing() {
+            drawing = false;
+            ctx.closePath(); // End the path when the mouse is released
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+
+            // Adjust the coordinates to ensure accuracy of where the mouse is clicking
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Set line properties
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = color;
+
+            // Draw a line to the new position
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            // Start a new path from the current position (avoiding line breaks)
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        // Event Listener for the Clear button
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas content
+        });
+
+        // Implementing HTML Live Code Editor
+        const htmlInput = document.getElementById('html');
+        const cssInput = document.getElementById('css');
+        const jsInput = document.getElementById('js');
+        const output = document.getElementById('output');
+        const librarySelector = document.getElementById('librarySelector');
+
+        function updateOutput() {
+            const html = htmlInput.value;
+            const css = cssInput.value;
+            const js = jsInput.value;
+            const libraryChoice = librarySelector.value;
+
+            let scripts = '';
+            if (libraryChoice === 'p5' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
+            }
+            if (libraryChoice === 'three' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
+            }
+
+            output.contentDocument.open();
+            output.contentDocument.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>${css}</style>
+                </head>
+                <body>${html}${scripts}<script>${js}<\/script></body>
+                </html>
+            `);
+            output.contentDocument.close();
+        }
+
+        function exportHTML() {
+            const fullDocument = output.contentDocument.documentElement.outerHTML;
+            const blob = new Blob([fullDocument], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'exported_html.html';
+            link.click();
+        }
+
+        // Implementing Crypto Portfolio Tracker
         let portfolio = JSON.parse(localStorage.getItem("portfolio")) || [];
         let portfolioList = document.getElementById("portfolioList");
         let cryptoNameInput = document.getElementById("cryptoName");
@@ -600,202 +809,6 @@
           chartLink.click();
         }
 
-        // Matrix rain animation
-        const matrixCanvas = document.getElementById('matrix-canvas');
-        const matrixCtx = matrixCanvas.getContext('2d');
-
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
-
-        const bitcoin = 'B';
-        const fontSize = 16;
-        const columns = matrixCanvas.width / fontSize;
-
-        const drops = [];
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
-
-        function drawMatrix() {
-            matrixCtx.fillStyle = 'rgba(240, 240, 243, 0.05)';
-            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-
-            matrixCtx.fillStyle = '#0f0';
-            matrixCtx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = Math.random() < 0.1 ? bitcoin : String.fromCharCode(Math.floor(Math.random() * 128));
-                matrixCtx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-
-        setInterval(drawMatrix, 50);
-
-        window.addEventListener('resize', () => {
-            matrixCanvas.width = window.innerWidth;
-            matrixCanvas.height = window.innerHeight;
-        });
-
-        // Magic HTML Editor functionality
-        const htmlInput = document.getElementById('html');
-        const cssInput = document.getElementById('css');
-        const jsInput = document.getElementById('js');
-        const output = document.getElementById('output');
-        const librarySelector = document.getElementById('librarySelector');
-
-        function updateOutput() {
-            const html = htmlInput.value;
-            const css = cssInput.value;
-            const js = jsInput.value;
-            const libraryChoice = librarySelector.value;
-
-            let scripts = '';
-            if (libraryChoice === 'p5' || libraryChoice === 'all') {
-                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
-            }
-            if (libraryChoice === 'three' || libraryChoice === 'all') {
-                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
-            }
-
-            output.contentDocument.open();
-            output.contentDocument.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>${css}</style>
-                </head>
-                <body>${html}${scripts}<script>${js}<\/script></body>
-                </html>
-            `);
-            output.contentDocument.close();
-        }
-
-        function exportHTML() {
-            const fullDocument = output.contentDocument.documentElement.outerHTML;
-            const blob = new Blob([fullDocument], { type: 'text/html' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = 'exported_html.html';
-            link.click();
-        }
-
-        // Bulletin board functionality
-        const bulletinBody = document.getElementById('bulletin-body');
-        const addEntryBtn = document.getElementById('addEntryBtn');
-        const entryModal = document.getElementById('entryModal');
-        const entryForm = document.getElementById('entryForm');
-        const closeModal = document.querySelector('.close');
-        let bulletinData = [
-            { name: 'John Doe', amount: 1000, job: 'Developer' },
-            { name: 'Jane Smith', amount: 1500, job: 'Designer' },
-            { name: 'Bob Johnson', amount: 2000, job: 'Manager' }
-        ];
-
-        function renderBulletinBoard() {
-            bulletinBody.innerHTML = '';
-            bulletinData.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>$${item.amount}</td>
-                    <td>${item.job}</td>
-                    <td>
-                        <button class="btn edit-btn" data-index="${index}">Edit</button>
-                        <button class="btn delete-btn" data-index="${index}">Delete</button>
-                    </td>
-                `;
-                bulletinBody.appendChild(row);
-            });
-
-            // Add event listeners for edit and delete buttons
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', editBulletinItem);
-            });
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', deleteBulletinItem);
-            });
-        }
-
-        function editBulletinItem(e) {
-            const index = e.target.dataset.index;
-            const item = bulletinData[index];
-            const newName = prompt('Enter new name:', item.name);
-            const newAmount = prompt('Enter new amount:', item.amount);
-            const newJob = prompt('Enter new job:', item.job);
-
-            if (newName && newAmount && newJob) {
-                bulletinData[index] = {
-                    name: newName,
-                    amount: parseFloat(newAmount),
-                    job: newJob
-                };
-                renderBulletinBoard();
-            }
-        }
-
-        function deleteBulletinItem(e) {
-            const index = e.target.dataset.index;
-            if (confirm('Are you sure you want to delete this item?')) {
-                bulletinData.splice(index, 1);
-                renderBulletinBoard();
-            }
-        }
-
-        addEntryBtn.addEventListener('click', () => {
-            entryModal.style.display = 'block';
-        });
-
-        closeModal.addEventListener('click', () => {
-            entryModal.style.display = 'none';
-        });
-
-        entryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('entryName').value;
-            const amount = parseFloat(document.getElementById('entryAmount').value);
-            const job = document.getElementById('entryJob').value;
-
-            if (name && !isNaN(amount) && job) {
-                bulletinData.push({ name, amount, job });
-                renderBulletinBoard();
-                entryModal.style.display = 'none';
-                entryForm.reset();
-            } else {
-                alert('Please fill in all fields correctly.');
-            }
-        });
-
-        renderBulletinBoard();
-
-        // Contact form functionality
-        const contactForm = document.getElementById('contact-form');
-        const nameInput = document.getElementById('name');
-        const emailInput = document.getElementById('email');
-        const messageInput = document.getElementById('message');
-
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Simple form validation
-            if (!nameInput.value || !emailInput.value || !messageInput.value) {
-                alert('Please fill in all fields');
-                return;
-            }
-
-            // Simulate form submission
-            alert(`Thank you for your message, ${nameInput.value}! We'll get back to you soon.`);
-            
-            // Clear form fields
-            nameInput.value = '';
-            emailInput.value = '';
-            messageInput.value = '';
-        });
-
         // Bitcoin price ticker
         const bitcoinPrice = document.getElementById('bitcoin-price');
 
@@ -814,6 +827,48 @@
 
         updateBitcoinPrice();
         setInterval(updateBitcoinPrice, 60000); // Update every minute
+
+        // Implementing Matrix Rain
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        const fontSize = 16;
+        const columns = Math.floor(window.innerWidth / fontSize);
+        const drops = Array(columns).fill(0);
+
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+
+        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^&*';
+
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+            matrixCtx.fillStyle = '#0F0';
+            matrixCtx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                matrixCtx.fillText(text, x, y);
+
+                if (y > matrixCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
     </script>
 </body>
+
 </html>
+
