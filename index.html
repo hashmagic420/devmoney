@@ -82,7 +82,7 @@
         .nav-item {
             margin: 0 15px;
             text-decoration: none;
-            color: #000; /* Changed to black */
+            color: #000;
             font-weight: bold;
             transition: color 0.3s ease;
         }
@@ -512,7 +512,11 @@
         <span id="bitcoin-price">Loading...</span>
     </div>
 
-    <!-- Libraries for chart.js and jQuery to handle UI -->
+    <!-- Libraries for chart.js, jQuery, and Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -617,46 +621,6 @@
         document.getElementById('clearBtn').addEventListener('click', () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
-
-        // Bulletin Board Functionality
-        const bulletinBody = document.getElementById('bulletin-body');
-        const addEntryBtn = document.getElementById('addEntryBtn');
-        let bulletinData = JSON.parse(localStorage.getItem('bulletin')) || [];
-
-        addEntryBtn.addEventListener('click', () => {
-            const name = prompt('Enter Name:');
-            const amount = prompt('Enter Amount (USD):');
-            const job = prompt('Enter Job:');
-
-            if (name && amount && job) {
-                const entry = { name, amount, job };
-                bulletinData.push(entry);
-                localStorage.setItem('bulletin', JSON.stringify(bulletinData));
-                renderBulletin();
-            }
-        });
-
-        function renderBulletin() {
-            bulletinBody.innerHTML = '';
-            bulletinData.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${entry.name}</td>
-                    <td>${entry.amount}</td>
-                    <td>${entry.job}</td>
-                    <td><button onclick="removeEntry(${index})">Remove</button></td>
-                `;
-                bulletinBody.appendChild(row);
-            });
-        }
-
-        function removeEntry(index) {
-            bulletinData.splice(index, 1);
-            localStorage.setItem('bulletin', JSON.stringify(bulletinData));
-            renderBulletin();
-        }
-
-        renderBulletin();
 
         // Implementing Crypto Portfolio Tracker
         let portfolio = JSON.parse(localStorage.getItem("portfolio")) || [];
@@ -864,7 +828,6 @@
                 const file = files[i];
                 const img = new Image();
 
-                // Create a promise for each image processing
                 const imgPromise = new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
@@ -923,49 +886,6 @@
                 status.textContent = 'Error during conversion.';
             });
         });
-
-        // Implementing HTML Live Code Editor
-        const htmlInput = document.getElementById('html');
-        const cssInput = document.getElementById('css');
-        const jsInput = document.getElementById('js');
-        const output = document.getElementById('output');
-        const librarySelector = document.getElementById('librarySelector');
-
-        function updateOutput() {
-            const html = htmlInput.value;
-            const css = cssInput.value;
-            const js = jsInput.value;
-            const libraryChoice = librarySelector.value;
-
-            let scripts = '';
-            if (libraryChoice === 'p5' || libraryChoice === 'all') {
-                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
-            }
-            if (libraryChoice === 'three' || libraryChoice === 'all') {
-                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
-            }
-
-            output.contentDocument.open();
-            output.contentDocument.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>${css}</style>
-                </head>
-                <body>${html}${scripts}<script>${js}<\/script></body>
-                </html>
-            `);
-            output.contentDocument.close();
-        }
-
-        function exportHTML() {
-            const fullDocument = output.contentDocument.documentElement.outerHTML;
-            const blob = new Blob([fullDocument], { type: 'text/html' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = 'exported_html.html';
-            link.click();
-        }
 
         // Vanta fog effect for background
         VANTA.FOG({
