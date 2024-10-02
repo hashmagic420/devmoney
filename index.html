@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevMoney.co - Financial Tools with Crypto Portfolio, Whiteboard, Code Editor</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
     <style>
         /* Reset and base styles */
         * {
@@ -13,12 +14,21 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f0f0f3;
-            position: relative;
+        body,
+        html {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
         }
 
         .container {
@@ -37,9 +47,9 @@
 
         /* Neuromorphic styles */
         .neuromorphic {
-            background: #f0f0f3;
+            background: #fff;
             border-radius: 10px;
-            box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+            box-shadow: 10px 10px 30px #d1d1d1, -10px -10px 30px #ffffff;
             padding: 20px;
             margin-bottom: 20px;
         }
@@ -63,18 +73,6 @@
             box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
         }
 
-        /* Header styles */
-        .header {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .header h1 {
-            font-size: 3em;
-            color: #2c3e50;
-        }
-
-        /* Navigation styles */
         .nav {
             display: flex;
             justify-content: center;
@@ -84,18 +82,27 @@
         .nav-item {
             margin: 0 15px;
             text-decoration: none;
-            color: #34495e;
+            color: #000; /* Changed to black */
             font-weight: bold;
             transition: color 0.3s ease;
         }
 
         .nav-item:hover {
-            color: #2c3e50;
+            color: #333;
+        }
+
+        /* Flex container for the apps */
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .app-container {
+            width: 48%;
         }
 
         /* Calculator styles */
         .calculator {
-            max-width: 300px;
             margin: 0 auto;
         }
 
@@ -144,8 +151,9 @@
         .toolbar {
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 1;
         }
 
         .color-picker {
@@ -157,105 +165,93 @@
             cursor: pointer;
         }
 
-        .brush-size {
-            width: 100px;
+        /* Bulk Image Converter styles */
+        .bulk-resizer {
+            margin: 0 auto;
         }
 
-        /* Code editor styles */
-        .code-editor {
-            display: flex;
-            flex-direction: column;
+        .input-group {
+            margin-bottom: 20px;
         }
 
-        #code-input {
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="file"],
+        select,
+        input[type="number"] {
             width: 100%;
-            height: 200px;
-            font-family: monospace;
-            font-size: 14px;
             padding: 10px;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
             margin-bottom: 10px;
-            background: #f0f0f3;
-            border: none;
-            box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
-            border-radius: 5px;
-            resize: vertical;
         }
 
-        #code-output {
-            width: 100%;
-            min-height: 100px;
-            padding: 10px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
+        .progress-bar-inner {
+            height: 20px;
+            width: 0%;
+            background-color: #28a745;
+            text-align: center;
+            color: #fff;
+            line-height: 20px;
         }
 
-        /* Bulletin board styles */
-        .bulletin-board table {
-            width: 100%;
-            border-collapse: collapse;
+        .status {
+            text-align: center;
+            color: #555;
         }
 
-        .bulletin-board th,
-        .bulletin-board td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        .download-link {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
         }
 
-        .bulletin-board th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .bulletin-board tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        /* Form styles */
-        .form-container form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-container input,
-        .form-container textarea {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: none;
-            background: #f0f0f3;
-            box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
+        .download-link a {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
             border-radius: 5px;
         }
 
-        .form-container textarea {
-            resize: vertical;
-            min-height: 100px;
+        .download-link a:hover {
+            background-color: #0056b3;
         }
 
-        .form-container button {
-            align-self: flex-start;
-        }
+        @media (max-width: 768px) {
+            .flex-container {
+                flex-direction: column;
+            }
 
-        /* Matrix rain animation styles */
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        /* Bitcoin price ticker styles */
-        #bitcoin-ticker {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(240, 240, 243, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 3px 3px 6px #d1d1d1, -3px -3px 6px #ffffff;
+            .app-container {
+                width: 100%;
+                margin-bottom: 20px;
+            }
         }
 
         /* Magic HTML Editor - Neuromorphic Integration */
@@ -349,8 +345,7 @@
 </head>
 
 <body>
-    <!-- Matrix Canvas for the background animation -->
-    <canvas id="matrix-canvas"></canvas>
+    <div id="vanta-bg"></div>
 
     <div class="container">
         <header class="header neuromorphic">
@@ -366,39 +361,75 @@
             </nav>
         </header>
 
-        <section id="calculator" class="calculator neuromorphic">
-            <h2>Financial Calculator</h2>
-            <input type="text" class="calc-display" id="calc-display" readonly>
-            <div class="calc-buttons">
-                <button class="btn calc-btn" data-value="7">7</button>
-                <button class="btn calc-btn" data-value="8">8</button>
-                <button class="btn calc-btn" data-value="9">9</button>
-                <button class="btn calc-btn" data-value="/">÷</button>
-                <button class="btn calc-btn" data-value="4">4</button>
-                <button class="btn calc-btn" data-value="5">5</button>
-                <button class="btn calc-btn" data-value="6">6</button>
-                <button class="btn calc-btn" data-value="*">×</button>
-                <button class="btn calc-btn" data-value="1">1</button>
-                <button class="btn calc-btn" data-value="2">2</button>
-                <button class="btn calc-btn" data-value="3">3</button>
-                <button class="btn calc-btn" data-value="-">−</button>
-                <button class="btn calc-btn" data-value=".">.</button>
-                <button class="btn calc-btn" data-value="0">0</button>
-                <button class="btn calc-btn" data-value="=">=</button>
-                <button class="btn calc-btn" data-value="+">+</button>
-                <button class="btn calc-btn" data-value="C">C</button>
-                <button class="btn calc-btn" data-value="(">(</button>
-                <button class="btn calc-btn" data-value=")">)</button>
-                <button class="btn calc-btn" data-value="%">%</button>
-            </div>
-        </section>
+        <!-- Flex container for bulk image converter and calculator -->
+        <div class="flex-container">
+            <section id="bulk-resizer" class="app-container bulk-resizer neuromorphic">
+                <h2>Bulk Image Converter and Resizer</h2>
+                <div class="input-group">
+                    <label for="file-input">Select Images:</label>
+                    <input type="file" id="file-input" accept="image/*" multiple>
+                </div>
+                <div class="input-group">
+                    <label for="output-format">Select Output Format:</label>
+                    <select id="output-format">
+                        <option value="jpeg">JPEG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="width">Canvas Width (px):</label>
+                    <input type="number" id="width" placeholder="Enter desired width" min="1">
+                </div>
+                <div class="input-group">
+                    <label for="height">Canvas Height (px):</label>
+                    <input type="number" id="height" placeholder="Enter desired height" min="1">
+                </div>
+                <button id="convert-button">Convert Images</button>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner" id="progress-bar-inner">0%</div>
+                    </div>
+                    <div class="status" id="status">Waiting for input...</div>
+                </div>
+                <div class="download-link" id="download-link">
+                    <a href="#" id="download-anchor">Download Converted Images</a>
+                </div>
+            </section>
+
+            <section id="calculator" class="app-container calculator neuromorphic">
+                <h2>Financial Calculator</h2>
+                <input type="text" class="calc-display" id="calc-display" readonly>
+                <div class="calc-buttons">
+                    <button class="btn calc-btn" data-value="7">7</button>
+                    <button class="btn calc-btn" data-value="8">8</button>
+                    <button class="btn calc-btn" data-value="9">9</button>
+                    <button class="btn calc-btn" data-value="/">÷</button>
+                    <button class="btn calc-btn" data-value="4">4</button>
+                    <button class="btn calc-btn" data-value="5">5</button>
+                    <button class="btn calc-btn" data-value="6">6</button>
+                    <button class="btn calc-btn" data-value="*">×</button>
+                    <button class="btn calc-btn" data-value="1">1</button>
+                    <button class="btn calc-btn" data-value="2">2</button>
+                    <button class="btn calc-btn" data-value="3">3</button>
+                    <button class="btn calc-btn" data-value="-">−</button>
+                    <button class="btn calc-btn" data-value=".">.</button>
+                    <button class="btn calc-btn" data-value="0">0</button>
+                    <button class="btn calc-btn" data-value="=">=</button>
+                    <button class="btn calc-btn" data-value="+">+</button>
+                    <button class="btn calc-btn" data-value="C">C</button>
+                    <button class="btn calc-btn" data-value="(">(</button>
+                    <button class="btn calc-btn" data-value=")">)</button>
+                    <button class="btn calc-btn" data-value="%">%</button>
+                </div>
+            </section>
+        </div>
 
         <section id="whiteboard" class="whiteboard neuromorphic">
             <h2>Financial Whiteboard - Real-Time Collaborative Canvas</h2>
             <div class="toolbar">
                 <button id="clearBtn" class="btn">Clear</button>
                 <input type="color" id="colorPicker" class="color-picker" value="#000000">
-                <input type="range" id="brushSize" class="brush-size" min="1" max="20" value="5">
             </div>
             <canvas id="canvas"></canvas>
         </section>
@@ -481,19 +512,6 @@
         <span id="bitcoin-price">Loading...</span>
     </div>
 
-    <div id="entryModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add New Entry</h2>
-            <form id="entryForm">
-                <input type="text" id="entryName" placeholder="Name" required>
-                <input type="number" id="entryAmount" placeholder="Amount (USD)" required>
-                <input type="text" id="entryJob" placeholder="Job" required>
-                <button type="submit" class="btn">Add Entry</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Libraries for chart.js and jQuery to handle UI -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -558,106 +576,87 @@
         const ctx = canvas.getContext('2d');
         let drawing = false;
         let color = document.getElementById('colorPicker').value;
-        let brushSize = document.getElementById('brushSize').value;
 
-        // Ensure the canvas size adjusts to match the size of the canvas container
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
 
-        // Event Listeners for color and brush size input
         document.getElementById('colorPicker').addEventListener('input', (e) => {
             color = e.target.value;
         });
 
-        document.getElementById('brushSize').addEventListener('input', (e) => {
-            brushSize = e.target.value;
-        });
-
-        // Event Listener to start drawing
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mousemove', draw);
 
         function startDrawing(e) {
             drawing = true;
-            ctx.beginPath(); // Start a new path for each mouse press
-            draw(e); // Draw the first point where the mouse is clicked
+            ctx.beginPath();
+            draw(e);
         }
 
         function stopDrawing() {
             drawing = false;
-            ctx.closePath(); // End the path when the mouse is released
+            ctx.closePath();
         }
 
         function draw(e) {
             if (!drawing) return;
-
-            // Adjust the coordinates to ensure accuracy of where the mouse is clicking
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            // Set line properties
-            ctx.lineWidth = brushSize;
+            ctx.lineWidth = 5;
             ctx.lineCap = 'round';
             ctx.strokeStyle = color;
-
-            // Draw a line to the new position
             ctx.lineTo(x, y);
             ctx.stroke();
-
-            // Start a new path from the current position (avoiding line breaks)
             ctx.beginPath();
             ctx.moveTo(x, y);
         }
 
-        // Event Listener for the Clear button
         document.getElementById('clearBtn').addEventListener('click', () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas content
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
-        // Implementing HTML Live Code Editor
-        const htmlInput = document.getElementById('html');
-        const cssInput = document.getElementById('css');
-        const jsInput = document.getElementById('js');
-        const output = document.getElementById('output');
-        const librarySelector = document.getElementById('librarySelector');
+        // Bulletin Board Functionality
+        const bulletinBody = document.getElementById('bulletin-body');
+        const addEntryBtn = document.getElementById('addEntryBtn');
+        let bulletinData = JSON.parse(localStorage.getItem('bulletin')) || [];
 
-        function updateOutput() {
-            const html = htmlInput.value;
-            const css = cssInput.value;
-            const js = jsInput.value;
-            const libraryChoice = librarySelector.value;
+        addEntryBtn.addEventListener('click', () => {
+            const name = prompt('Enter Name:');
+            const amount = prompt('Enter Amount (USD):');
+            const job = prompt('Enter Job:');
 
-            let scripts = '';
-            if (libraryChoice === 'p5' || libraryChoice === 'all') {
-                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
+            if (name && amount && job) {
+                const entry = { name, amount, job };
+                bulletinData.push(entry);
+                localStorage.setItem('bulletin', JSON.stringify(bulletinData));
+                renderBulletin();
             }
-            if (libraryChoice === 'three' || libraryChoice === 'all') {
-                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
-            }
+        });
 
-            output.contentDocument.open();
-            output.contentDocument.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>${css}</style>
-                </head>
-                <body>${html}${scripts}<script>${js}<\/script></body>
-                </html>
-            `);
-            output.contentDocument.close();
+        function renderBulletin() {
+            bulletinBody.innerHTML = '';
+            bulletinData.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.name}</td>
+                    <td>${entry.amount}</td>
+                    <td>${entry.job}</td>
+                    <td><button onclick="removeEntry(${index})">Remove</button></td>
+                `;
+                bulletinBody.appendChild(row);
+            });
         }
 
-        function exportHTML() {
-            const fullDocument = output.contentDocument.documentElement.outerHTML;
-            const blob = new Blob([fullDocument], { type: 'text/html' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = 'exported_html.html';
-            link.click();
+        function removeEntry(index) {
+            bulletinData.splice(index, 1);
+            localStorage.setItem('bulletin', JSON.stringify(bulletinData));
+            renderBulletin();
         }
+
+        renderBulletin();
 
         // Implementing Crypto Portfolio Tracker
         let portfolio = JSON.parse(localStorage.getItem("portfolio")) || [];
@@ -828,44 +827,156 @@
         updateBitcoinPrice();
         setInterval(updateBitcoinPrice, 60000); // Update every minute
 
-        // Implementing Matrix Rain
-        const matrixCanvas = document.getElementById('matrix-canvas');
-        const matrixCtx = matrixCanvas.getContext('2d');
-        const fontSize = 16;
-        const columns = Math.floor(window.innerWidth / fontSize);
-        const drops = Array(columns).fill(0);
+        // Implementing Bulk Image Converter and Resizer
+        document.getElementById('convert-button').addEventListener('click', async () => {
+            const fileInput = document.getElementById('file-input');
+            const outputFormat = document.getElementById('output-format').value;
+            const width = parseInt(document.getElementById('width').value);
+            const height = parseInt(document.getElementById('height').value);
+            const progressBarInner = document.getElementById('progress-bar-inner');
+            const status = document.getElementById('status');
+            const downloadLink = document.getElementById('download-link');
+            const downloadAnchor = document.getElementById('download-anchor');
 
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
+            const files = fileInput.files;
 
-        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^&*';
-
-        function drawMatrix() {
-            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-
-            matrixCtx.fillStyle = '#0F0';
-            matrixCtx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-
-                matrixCtx.fillText(text, x, y);
-
-                if (y > matrixCanvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
+            if (!files.length) {
+                alert('Please select at least one image file.');
+                return;
             }
+
+            if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+                alert('Please enter valid canvas width and height.');
+                return;
+            }
+
+            document.getElementById('convert-button').disabled = true;
+            status.textContent = 'Starting conversion...';
+            progressBarInner.style.width = '0%';
+            progressBarInner.textContent = '0%';
+            downloadLink.style.display = 'none';
+
+            const zip = new JSZip();
+            const totalFiles = files.length;
+            let processedFiles = 0;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const img = new Image();
+
+                // Create a promise for each image processing
+                const imgPromise = new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        img.src = e.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            canvas.toBlob((blob) => {
+                                if (blob) {
+                                    const newFileName = file.name.replace(/\.[^/.]+$/, `.${outputFormat}`);
+                                    zip.file(newFileName, blob);
+                                    processedFiles++;
+                                    const progress = Math.floor((processedFiles / totalFiles) * 100);
+                                    progressBarInner.style.width = `${progress}%`;
+                                    progressBarInner.textContent = `${progress}%`;
+                                    status.textContent = `Processing ${processedFiles} of ${totalFiles} images...`;
+                                    resolve();
+                                } else {
+                                    reject(new Error('Canvas is empty'));
+                                }
+                            }, `image/${outputFormat}`);
+                        };
+                        img.onerror = () => {
+                            reject(new Error('Failed to load image'));
+                        };
+                    };
+                    reader.onerror = () => {
+                        reject(new Error('Failed to read file'));
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                try {
+                    await imgPromise;
+                } catch (error) {
+                    console.error(`Error processing file ${file.name}:`, error);
+                    alert(`Error processing file ${file.name}: ${error.message}`);
+                }
+            }
+
+            status.textContent = 'Creating ZIP file...';
+            zip.generateAsync({ type: 'blob' }).then((content) => {
+                const zipFileName = `converted_images_${Date.now()}.zip`;
+                downloadAnchor.href = URL.createObjectURL(content);
+                downloadAnchor.download = zipFileName;
+                downloadLink.style.display = 'block';
+                status.textContent = 'Conversion complete!';
+                document.getElementById('convert-button').disabled = false;
+            }).catch((err) => {
+                console.error('Error creating ZIP:', err);
+                alert('Error creating ZIP file.');
+                document.getElementById('convert-button').disabled = false;
+                status.textContent = 'Error during conversion.';
+            });
+        });
+
+        // Implementing HTML Live Code Editor
+        const htmlInput = document.getElementById('html');
+        const cssInput = document.getElementById('css');
+        const jsInput = document.getElementById('js');
+        const output = document.getElementById('output');
+        const librarySelector = document.getElementById('librarySelector');
+
+        function updateOutput() {
+            const html = htmlInput.value;
+            const css = cssInput.value;
+            const js = jsInput.value;
+            const libraryChoice = librarySelector.value;
+
+            let scripts = '';
+            if (libraryChoice === 'p5' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
+            }
+            if (libraryChoice === 'three' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
+            }
+
+            output.contentDocument.open();
+            output.contentDocument.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>${css}</style>
+                </head>
+                <body>${html}${scripts}<script>${js}<\/script></body>
+                </html>
+            `);
+            output.contentDocument.close();
         }
 
-        setInterval(drawMatrix, 50);
+        function exportHTML() {
+            const fullDocument = output.contentDocument.documentElement.outerHTML;
+            const blob = new Blob([fullDocument], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'exported_html.html';
+            link.click();
+        }
 
-        window.addEventListener('resize', () => {
-            matrixCanvas.width = window.innerWidth;
-            matrixCanvas.height = window.innerHeight;
+        // Vanta fog effect for background
+        VANTA.FOG({
+            el: "#vanta-bg",
+            highlightColor: 0xff9900,
+            midtoneColor: 0x00ff99,
+            lowlightColor: 0x9900ff,
+            baseColor: 0xffffff,
+            blurFactor: 0.5,
+            speed: 2.0,
+            zoom: 1.2
         });
     </script>
 </body>
