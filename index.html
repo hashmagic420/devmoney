@@ -95,6 +95,8 @@
         .flex-container {
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .app-container {
@@ -316,6 +318,104 @@
             background-color: #D54B1A;
         }
 
+        /* Video Compressor styles */
+        .video-compressor {
+            margin: 0 auto;
+        }
+
+        .video-compressor .drop-zone {
+            border: 2px dashed #cccccc;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #cccccc;
+            transition: background-color 0.3s, border-color 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .video-compressor .drop-zone.dragover {
+            background-color: #f9f9f9;
+            border-color: #333333;
+            color: #333333;
+        }
+
+        .video-compressor .drop-zone input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .video-compressor .options {
+            margin-top: 20px;
+        }
+
+        .video-compressor .options label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .video-compressor .options input[type="number"],
+        .video-compressor .options select {
+            width: 150px;
+            padding: 5px;
+            margin-left: 10px;
+        }
+
+        .video-compressor .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .video-compressor .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #333333;
+            color: #ffffff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .video-compressor .buttons button:disabled {
+            background-color: #999999;
+            cursor: not-allowed;
+        }
+
+        .video-compressor #progress-container {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .video-compressor #progress {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-compressor #progress-bar {
+            height: 20px;
+            width: 0%;
+            background-color: #76c7c0;
+            transition: width 0.2s;
+        }
+
+        .video-compressor #output {
+            margin-top: 20px;
+            word-wrap: break-word;
+        }
+
+        .video-compressor #output video {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .container {
@@ -335,7 +435,8 @@
             .whiteboard,
             .code-editor,
             .bulletin-board,
-            .form-container {
+            .form-container,
+            .video-compressor {
                 margin-bottom: 30px;
             }
 
@@ -368,7 +469,7 @@
             </nav>
         </header>
 
-        <!-- Flex container for bulk image converter and calculator -->
+        <!-- Flex container for apps -->
         <div class="flex-container">
             <section id="bulk-resizer" class="app-container bulk-resizer neuromorphic">
                 <h2>Bulk Image Converter and Resizer</h2>
@@ -382,7 +483,7 @@
                         <option value="jpeg">JPEG</option>
                         <option value="png">PNG</option>
                         <option value="webp">WebP</option>
-                        <option value="avif">AVIF</option> <!-- AVIF Added -->
+                        <option value="avif">AVIF</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -430,6 +531,51 @@
                     <button class="btn calc-btn" data-value=")">)</button>
                     <button class="btn calc-btn" data-value="%">%</button>
                 </div>
+            </section>
+
+            <!-- New Video Compressor Section -->
+            <section id="video-compressor" class="app-container video-compressor neuromorphic">
+                <h2>In-Browser Video Compressor</h2>
+                <div id="video-drop-zone" class="drop-zone">
+                    Drag & Drop Video Here or Click to Browse
+                    <input type="file" id="video-file-input" accept="video/*">
+                </div>
+
+                <div class="options">
+                    <label>
+                        Compression Type:
+                        <select id="compression-type">
+                            <option value="bitrate">Reduce Bitrate</option>
+                            <option value="resolution">Reduce Resolution</option>
+                        </select>
+                    </label>
+                    <label id="bitrate-label">
+                        Target Bitrate (kbps):
+                        <input type="number" id="bitrate" min="100" max="5000" value="1000">
+                    </label>
+                    <label id="resolution-label" style="display: none;">
+                        Target Resolution:
+                        <select id="resolution">
+                            <option value="1920x1080">1080p (1920x1080)</option>
+                            <option value="1280x720">720p (1280x720)</option>
+                            <option value="854x480">480p (854x480)</option>
+                            <option value="640x360">360p (640x360)</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="buttons">
+                    <button id="compress-btn">Compress Video</button>
+                </div>
+
+                <div id="progress-container">
+                    <div id="progress">
+                        <div id="progress-bar"></div>
+                    </div>
+                    <p id="progress-text"></p>
+                </div>
+
+                <div id="output"></div>
             </section>
         </div>
 
@@ -531,6 +677,7 @@
     <!-- p5.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 
+    <!-- Existing JavaScript code -->
     <script>
         // Implementing Calculator Functionality
         const calcDisplay = document.getElementById('calc-display');
@@ -715,7 +862,7 @@
                                 backgroundColor: labels.map(() => getRandomColor()),
                             },
                         ],
-                    },
+                    }
                 }
             );
         }
@@ -942,8 +1089,210 @@
             link.download = 'exported_html.html';
             link.click();
         }
+
+        // Video Compressor JavaScript Code
+        // Video Compressor Functionality
+        const videoDropZone = document.getElementById('video-drop-zone');
+        const videoFileInput = document.getElementById('video-file-input');
+        const compressBtn = document.getElementById('compress-btn');
+        const videoOutput = document.querySelector('#video-compressor #output');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        const compressionTypeSelect = document.getElementById('compression-type');
+        const bitrateLabel = document.getElementById('bitrate-label');
+        const bitrateInput = document.getElementById('bitrate');
+        const resolutionLabel = document.getElementById('resolution-label');
+        const resolutionSelect = document.getElementById('resolution');
+
+        let selectedVideoFile = null;
+
+        // Toggle compression options based on selected type
+        compressionTypeSelect.addEventListener('change', () => {
+            if (compressionTypeSelect.value === 'bitrate') {
+                bitrateLabel.style.display = 'block';
+                resolutionLabel.style.display = 'none';
+            } else {
+                bitrateLabel.style.display = 'none';
+                resolutionLabel.style.display = 'block';
+            }
+        });
+
+        // Handle Drag & Drop
+        videoDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            videoDropZone.classList.add('dragover');
+        });
+
+        videoDropZone.addEventListener('dragleave', () => {
+            videoDropZone.classList.remove('dragover');
+        });
+
+        videoDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            videoDropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                selectedVideoFile = e.dataTransfer.files[0];
+                videoDropZone.textContent = `Selected: ${selectedVideoFile.name}`;
+            }
+        });
+
+        // Handle Click to Browse
+        videoDropZone.addEventListener('click', () => {
+            videoFileInput.click();
+        });
+
+        videoFileInput.addEventListener('change', () => {
+            if (videoFileInput.files.length > 0) {
+                selectedVideoFile = videoFileInput.files[0];
+                videoDropZone.textContent = `Selected: ${selectedVideoFile.name}`;
+            }
+        });
+
+        // Handle Compression
+        compressBtn.addEventListener('click', async () => {
+            if (!selectedVideoFile) {
+                alert('Please select a video file first.');
+                return;
+            }
+
+            const compressionType = compressionTypeSelect.value;
+            let targetBitrate = parseInt(bitrateInput.value);
+            let targetResolution = resolutionSelect.value;
+
+            if (compressionType === 'bitrate') {
+                if (isNaN(targetBitrate) || targetBitrate < 100 || targetBitrate > 5000) {
+                    alert('Please enter a valid bitrate between 100 and 5000 kbps.');
+                    return;
+                }
+            } else if (compressionType === 'resolution') {
+                if (!targetResolution) {
+                    alert('Please select a valid resolution.');
+                    return;
+                }
+            }
+
+            compressBtn.disabled = true;
+            videoOutput.innerHTML = '';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressText.textContent = 'Initializing compression...';
+
+            try {
+                const videoURL = URL.createObjectURL(selectedVideoFile);
+                const video = document.createElement('video');
+                video.src = videoURL;
+                video.crossOrigin = 'anonymous';
+                await video.play();
+
+                // Wait for video metadata to load
+                await new Promise((resolve) => {
+                    if (video.readyState >= 2) {
+                        resolve();
+                    } else {
+                        video.onloadedmetadata = () => {
+                            resolve();
+                        };
+                    }
+                });
+
+                // Create canvas to draw video frames
+                const canvas = document.createElement('canvas');
+                let width = video.videoWidth;
+                let height = video.videoHeight;
+
+                if (compressionType === 'resolution') {
+                    const [targetWidth, targetHeight] = targetResolution.split('x').map(Number);
+                    width = targetWidth;
+                    height = targetHeight;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+
+                // Create stream from canvas
+                const stream = canvas.captureStream();
+                let mimeType = 'video/webm; codecs=vp9';
+
+                // Check if the desired MIME type is supported
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'video/webm; codecs=vp8';
+                    if (!MediaRecorder.isTypeSupported(mimeType)) {
+                        mimeType = 'video/webm';
+                        if (!MediaRecorder.isTypeSupported(mimeType)) {
+                            throw new Error('No supported MIME type for MediaRecorder.');
+                        }
+                    }
+                }
+
+                const options = { mimeType };
+                const mediaRecorder = new MediaRecorder(stream, options);
+                const chunks = [];
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        chunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: mimeType });
+                    const compressedURL = URL.createObjectURL(blob);
+                    videoOutput.innerHTML = `
+                        <h3>Compression Complete!</h3>
+                        <video controls src="${compressedURL}"></video>
+                        <br>
+                        <a href="${compressedURL}" download="compressed_${selectedVideoFile.name}">Download Compressed Video</a>
+                    `;
+                    compressBtn.disabled = false;
+                };
+
+                mediaRecorder.start(100); // Collect data in chunks of 100ms
+
+                // Function to draw video frames to canvas
+                const drawFrame = () => {
+                    if (video.paused || video.ended) {
+                        mediaRecorder.stop();
+                        return;
+                    }
+                    ctx.drawImage(video, 0, 0, width, height);
+                    requestAnimationFrame(drawFrame);
+                };
+
+                // Start drawing frames
+                drawFrame();
+
+                // Monitor progress
+                const totalDuration = video.duration;
+                let currentTime = 0;
+
+                video.ontimeupdate = () => {
+                    currentTime = video.currentTime;
+                    const progressPercent = Math.min((currentTime / totalDuration) * 100, 100);
+                    progressBar.style.width = `${progressPercent}%`;
+                    progressText.textContent = `Compressing: ${progressPercent.toFixed(2)}%`;
+                };
+
+                // Handle video playback end
+                video.onended = () => {
+                    mediaRecorder.stop();
+                };
+
+                // Start playback
+                video.currentTime = 0;
+                video.play();
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred during compression. Please check the console for details.');
+                compressBtn.disabled = false;
+                progressContainer.style.display = 'none';
+            }
+        });
     </script>
 </body>
 
 </html>
+
 
