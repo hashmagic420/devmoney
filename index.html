@@ -270,6 +270,11 @@
             overflow: hidden;
         }
 
+        .magic-editor .editor {
+            display: flex;
+            height: 150px;
+        }
+
         .magic-editor textarea {
             flex: 1;
             margin: 5px;
@@ -287,11 +292,13 @@
             color: #000;
             border: 1px solid #333;
             margin: 5px;
+            height: 400px;
         }
 
         .editor-controls {
             display: flex;
             justify-content: space-between;
+            margin: 10px 5px;
         }
 
         .editor-controls select,
@@ -459,6 +466,7 @@
             </div>
         </section>
 
+        <!-- Magic HTML Editor -->
         <section id="magic-editor" class="magic-editor-container neuromorphic">
             <h2>HTML Live Code Editor</h2>
             <div id="editorContainer" class="magic-editor">
@@ -520,6 +528,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- p5.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 
     <script>
         // Implementing Calculator Functionality
@@ -641,136 +651,126 @@
         downloadBtn.addEventListener("click", downloadPortfolio);
 
         window.addEventListener("load", () => {
-          updatePortfolioList();
-          if (portfolio.length > 0) {
-            updatePortfolioChart();
-          }
+            updatePortfolioList();
+            if (portfolio.length > 0) {
+                updatePortfolioChart();
+            }
         });
 
         function addCryptoToPortfolio() {
-          let name = cryptoNameInput.value.trim();
-          let amount = parseFloat(cryptoAmountInput.value);
-          let price = parseFloat(cryptoPriceInput.value);
-          let date = cryptoDateInput.value;
-          let time = cryptoTimeInput.value;
+            let name = cryptoNameInput.value.trim();
+            let amount = parseFloat(cryptoAmountInput.value);
+            let price = parseFloat(cryptoPriceInput.value);
+            let date = cryptoDateInput.value;
+            let time = cryptoTimeInput.value;
 
-          if (name && !isNaN(amount) && !isNaN(price) && date && time) {
-            let totalValue = amount * price;
-            portfolio.push({ name, amount, price, totalValue, date, time });
-            updatePortfolioList();
-            updatePortfolioChart();
-            saveToLocal();
-            clearInputs();
-          }
+            if (name && !isNaN(amount) && !isNaN(price) && date && time) {
+                let totalValue = amount * price;
+                portfolio.push({ name, amount, price, totalValue, date, time });
+                updatePortfolioList();
+                updatePortfolioChart();
+                saveToLocal();
+                clearInputs();
+            }
         }
 
         function updatePortfolioList() {
-          portfolioList.innerHTML = "";
-          portfolio.forEach((crypto, index) => {
-            let div = document.createElement("div");
-            div.className = "crypto-item";
-            div.innerHTML = `
-                        <span><strong>${index + 1}. ${
-              crypto.name
-            }</strong></span>
-                        <span>Amount: ${crypto.amount}</span>
-                        <span>Price: ${crypto.price}</span>
-                        <span>Total Value: ${crypto.totalValue.toFixed(
-                          2
-                        )}</span>
-                        <span>Date: ${crypto.date}</span>
-                        <span>Time: ${crypto.time}</span>
-                        <button onclick="removeCrypto(${index})">Remove</button>
-                    `;
-            portfolioList.appendChild(div);
-          });
+            portfolioList.innerHTML = "";
+            portfolio.forEach((crypto, index) => {
+                let div = document.createElement("div");
+                div.className = "crypto-item";
+                div.innerHTML = `
+                    <span><strong>${index + 1}. ${crypto.name}</strong></span>
+                    <span>Amount: ${crypto.amount}</span>
+                    <span>Price: ${crypto.price}</span>
+                    <span>Total Value: ${crypto.totalValue.toFixed(2)}</span>
+                    <span>Date: ${crypto.date}</span>
+                    <span>Time: ${crypto.time}</span>
+                    <button onclick="removeCrypto(${index})">Remove</button>
+                `;
+                portfolioList.appendChild(div);
+            });
         }
 
         function updatePortfolioChart() {
-          let labels = portfolio.map(
-            (crypto) => `${crypto.name} (${crypto.date} ${crypto.time})`
-          );
-          let data = portfolio.map((crypto) => crypto.totalValue);
+            let labels = portfolio.map(
+                (crypto) => `${crypto.name} (${crypto.date} ${crypto.time})`
+            );
+            let data = portfolio.map((crypto) => crypto.totalValue);
 
-          if (portfolioChart) {
-            portfolioChart.destroy();
-          }
-
-          portfolioChart = new Chart(
-            document.getElementById("portfolioChart"),
-            {
-              type: "pie",
-              data: {
-                labels: labels,
-                datasets: [
-                  {
-                    label: "Portfolio Value",
-                    data: data,
-                    backgroundColor: labels.map(() => getRandomColor()),
-                  },
-                ],
-              },
+            if (portfolioChart) {
+                portfolioChart.destroy();
             }
-          );
+
+            portfolioChart = new Chart(
+                document.getElementById("portfolioChart"),
+                {
+                    type: "pie",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Portfolio Value",
+                                data: data,
+                                backgroundColor: labels.map(() => getRandomColor()),
+                            },
+                        ],
+                    },
+                }
+            );
         }
 
         function getRandomColor() {
-          let letters = "0123456789ABCDEF";
-          let color = "#";
-          for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-          }
-          return color;
+            let letters = "0123456789ABCDEF";
+            let color = "#";
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
 
         function clearInputs() {
-          cryptoNameInput.value = "";
-          cryptoAmountInput.value = "";
-          cryptoPriceInput.value = "";
-          cryptoDateInput.value = "";
-          cryptoTimeInput.value = "";
+            cryptoNameInput.value = "";
+            cryptoAmountInput.value = "";
+            cryptoPriceInput.value = "";
+            cryptoDateInput.value = "";
+            cryptoTimeInput.value = "";
         }
 
         function removeCrypto(index) {
-          portfolio.splice(index, 1);
-          updatePortfolioList();
-          updatePortfolioChart();
-          saveToLocal();
+            portfolio.splice(index, 1);
+            updatePortfolioList();
+            updatePortfolioChart();
+            saveToLocal();
         }
 
         function saveToLocal() {
-          localStorage.setItem("portfolio", JSON.stringify(portfolio));
+            localStorage.setItem("portfolio", JSON.stringify(portfolio));
         }
 
         function downloadPortfolio() {
-          let element = document.createElement("a");
-          let data = portfolio
-            .map(
-              (crypto, index) =>
-                `${index + 1}. ${crypto.name} - Amount: ${
-                  crypto.amount
-                }, Price: ${
-                  crypto.price
-                }, Total Value: ${crypto.totalValue.toFixed(2)}, Date: ${
-                  crypto.date
-                }, Time: ${crypto.time}`
-            )
-            .join("\n");
+            let element = document.createElement("a");
+            let data = portfolio
+                .map(
+                    (crypto, index) =>
+                        `${index + 1}. ${crypto.name} - Amount: ${crypto.amount}, Price: ${crypto.price}, Total Value: ${crypto.totalValue.toFixed(2)}, Date: ${crypto.date}, Time: ${crypto.time}`
+                )
+                .join("\n");
 
-          element.setAttribute(
-            "href",
-            "data:text/plain;charset=utf-8," + encodeURIComponent(data)
-          );
-          element.setAttribute("download", "portfolio.txt");
-          document.body.appendChild(element);
-          element.click();
-          document.body.removeChild(element);
+            element.setAttribute(
+                "href",
+                "data:text/plain;charset=utf-8," + encodeURIComponent(data)
+            );
+            element.setAttribute("download", "portfolio.txt");
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
 
-          let chartDataURL = portfolioChart.toBase64Image();
-          let chartLink = document.createElement("a");
-          chartLink.href = chartDataURL;
-          chartLink.download = "portfolio_chart.png";
-          chartLink.click();
+            let chartDataURL = portfolioChart.toBase64Image();
+            let chartLink = document.createElement("a");
+            chartLink.href = chartDataURL;
+            chartLink.download = "portfolio_chart.png";
+            chartLink.click();
         }
 
         // Bitcoin price ticker
@@ -899,9 +899,51 @@
             speed: 2.0,
             zoom: 1.2
         });
+
+        // Magic HTML Editor Functions
+        const htmlInput = document.getElementById('html');
+        const cssInput = document.getElementById('css');
+        const jsInput = document.getElementById('js');
+        const outputFrame = document.getElementById('output');
+        const librarySelector = document.getElementById('librarySelector');
+
+        function updateOutput() {
+            const htmlContent = htmlInput.value;
+            const cssContent = cssInput.value;
+            const jsContent = jsInput.value;
+            const libraryChoice = librarySelector.value;
+
+            let scripts = '';
+            if (libraryChoice === 'p5' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"><\/script>';
+            }
+            if (libraryChoice === 'three' || libraryChoice === 'all') {
+                scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>';
+            }
+
+            outputFrame.contentDocument.open();
+            outputFrame.contentDocument.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>${cssContent}</style>
+                </head>
+                <body>${htmlContent}${scripts}<script>${jsContent}<\/script></body>
+                </html>
+            `);
+            outputFrame.contentDocument.close();
+        }
+
+        function exportHTML() {
+            const fullDocument = outputFrame.contentDocument.documentElement.outerHTML;
+            const blob = new Blob([fullDocument], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'exported_html.html';
+            link.click();
+        }
     </script>
 </body>
 
 </html>
-
 
