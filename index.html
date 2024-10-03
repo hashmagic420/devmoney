@@ -416,6 +416,60 @@
             margin-top: 10px;
         }
 
+        /* Media to Base64 Converter styles */
+        .base64-converter {
+            margin: 0 auto;
+        }
+
+        .base64-converter .drop-zone {
+            border: 2px dashed #cccccc;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #cccccc;
+            transition: background-color 0.3s, border-color 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .base64-converter .drop-zone.dragover {
+            background-color: #f9f9f9;
+            border-color: #333333;
+            color: #333333;
+        }
+
+        .base64-converter .drop-zone input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .base64-converter .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .base64-converter #base64-output {
+            margin-top: 20px;
+            word-wrap: break-word;
+        }
+
+        .base64-converter textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            background-color: #f0f0f3;
+            color: #333;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .container {
@@ -436,7 +490,8 @@
             .code-editor,
             .bulletin-board,
             .form-container,
-            .video-compressor {
+            .video-compressor,
+            .base64-converter {
                 margin-bottom: 30px;
             }
 
@@ -471,6 +526,7 @@
 
         <!-- Flex container for apps -->
         <div class="flex-container">
+            <!-- Bulk Image Converter and Resizer -->
             <section id="bulk-resizer" class="app-container bulk-resizer neuromorphic">
                 <h2>Bulk Image Converter and Resizer</h2>
                 <div class="input-group">
@@ -506,6 +562,7 @@
                 </div>
             </section>
 
+            <!-- Financial Calculator -->
             <section id="calculator" class="app-container calculator neuromorphic">
                 <h2>Financial Calculator</h2>
                 <input type="text" class="calc-display" id="calc-display" readonly>
@@ -533,7 +590,7 @@
                 </div>
             </section>
 
-            <!-- New Video Compressor Section -->
+            <!-- Video Compressor Section -->
             <section id="video-compressor" class="app-container video-compressor neuromorphic">
                 <h2>In-Browser Video Compressor</h2>
                 <div id="video-drop-zone" class="drop-zone">
@@ -577,8 +634,28 @@
 
                 <div id="output"></div>
             </section>
+
+            <!-- Media to Base64 Converter Section -->
+            <section id="base64-converter" class="app-container base64-converter neuromorphic">
+                <h2>Media to Base64 Converter</h2>
+                <div id="base64-drop-zone" class="drop-zone">
+                    Drag & Drop Media Here or Click to Browse
+                    <input type="file" id="base64-file-input" accept="image/*,video/*,audio/*">
+                </div>
+
+                <div class="buttons">
+                    <button id="convert-btn">Convert to Base64</button>
+                    <button id="download-base64-btn" style="display: none;">Download Base64 String</button>
+                </div>
+
+                <div id="base64-output">
+                    <label for="base64-textarea">Base64 Output:</label>
+                    <textarea id="base64-textarea" readonly></textarea>
+                </div>
+            </section>
         </div>
 
+        <!-- Whiteboard Section -->
         <section id="whiteboard" class="whiteboard neuromorphic">
             <h2>Financial Whiteboard - Real-Time Collaborative Canvas</h2>
             <div class="toolbar">
@@ -635,6 +712,7 @@
             </div>
         </section>
 
+        <!-- Bulletin Board Section -->
         <section id="bulletin-board" class="bulletin-board neuromorphic">
             <h2>Financial Bulletin Board</h2>
             <table id="bulletin-table">
@@ -651,6 +729,7 @@
             <button id="addEntryBtn" class="btn">Add Entry</button>
         </section>
 
+        <!-- Contact Form Section -->
         <section id="contact" class="form-container neuromorphic">
             <h2>Contact Us</h2>
             <form id="contact-form">
@@ -677,7 +756,7 @@
     <!-- p5.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 
-    <!-- Existing JavaScript code -->
+    <!-- JavaScript code -->
     <script>
         // Implementing Calculator Functionality
         const calcDisplay = document.getElementById('calc-display');
@@ -1290,9 +1369,81 @@
                 progressContainer.style.display = 'none';
             }
         });
+
+        // Media to Base64 Converter JavaScript Code
+        // Media to Base64 Converter Functionality
+        const base64DropZone = document.getElementById('base64-drop-zone');
+        const base64FileInput = document.getElementById('base64-file-input');
+        const convertBtn = document.getElementById('convert-btn');
+        const base64Output = document.getElementById('base64-output');
+        const base64Textarea = document.getElementById('base64-textarea');
+        const downloadBase64Btn = document.getElementById('download-base64-btn');
+
+        let selectedBase64File = null;
+
+        // Handle Drag & Drop
+        base64DropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            base64DropZone.classList.add('dragover');
+        });
+
+        base64DropZone.addEventListener('dragleave', () => {
+            base64DropZone.classList.remove('dragover');
+        });
+
+        base64DropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            base64DropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                selectedBase64File = e.dataTransfer.files[0];
+                base64DropZone.textContent = `Selected: ${selectedBase64File.name}`;
+            }
+        });
+
+        // Handle Click to Browse
+        base64DropZone.addEventListener('click', () => {
+            base64FileInput.click();
+        });
+
+        base64FileInput.addEventListener('change', () => {
+            if (base64FileInput.files.length > 0) {
+                selectedBase64File = base64FileInput.files[0];
+                base64DropZone.textContent = `Selected: ${selectedBase64File.name}`;
+            }
+        });
+
+        // Handle Conversion
+        convertBtn.addEventListener('click', () => {
+            if (!selectedBase64File) {
+                alert('Please select a media file first.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const base64String = reader.result;
+                base64Textarea.value = base64String;
+                downloadBase64Btn.style.display = 'inline-block';
+            };
+
+            reader.onerror = () => {
+                alert('An error occurred while reading the file.');
+            };
+
+            reader.readAsDataURL(selectedBase64File);
+        });
+
+        // Handle Download Base64 String
+        downloadBase64Btn.addEventListener('click', () => {
+            const blob = new Blob([base64Textarea.value], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${selectedBase64File.name}_base64.txt`;
+            link.click();
+        });
     </script>
 </body>
 
 </html>
-
 
